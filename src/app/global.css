@@ -1,0 +1,61 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+html,
+body {
+  @apply min-h-screen;
+}
+
+.Wrapper {
+  @apply box-border pl-[var(--spacing)] -mb-px;
+  list-style: none;
+}
+.Wrapper.clone {
+  @apply inline-block pointer-events-none pl-2.5 pt-[5px] p-0;
+}
+.Wrapper.clone .TreeItem {
+  @apply rounded shadow-[0px_15px_15px_0_rgba(34,33,81,0.1)] pr-6;
+  --vertical-padding: 5px;
+}
+.Wrapper.ghost.indicator {
+  @apply opacity-100 relative z-[1] -mb-px;
+}
+.Wrapper.ghost.indicator .TreeItem {
+  @apply relative h-2 bg-[#56a1f8] p-0 border-[#2389ff] before:absolute before:block before:content-[''] before:w-3 before:h-3 before:border before:bg-white before:rounded-[50%] before:border-solid before:border-[#2389ff] before:-left-2 before:-top-1;
+}
+.Wrapper.ghost.indicator .TreeItem > * {
+  @apply opacity-0 h-0;
+  /* Items are hidden using height and opacity to retain focus */
+}
+.Wrapper.ghost:not(.indicator) {
+  @apply opacity-50;
+}
+.Wrapper.ghost .TreeItem > * {
+  @apply shadow-none bg-transparent;
+}
+.TreeItem {
+  @apply relative flex items-center pt-[var(--vertical-padding)] pb-[var(--vertical-padding)] bg-white border text-[#222] box-border px-2.5 border-solid border-[#dedede];
+  --vertical-padding: 10px;
+}
+.Text {
+  @apply grow whitespace-nowrap text-ellipsis overflow-hidden pl-2;
+}
+.Count {
+  @apply absolute flex items-center justify-center w-6 h-6 bg-[#2389ff] text-[0.8rem] font-semibold text-white rounded-[50%] -right-2.5 -top-2.5;
+}
+.disableInteraction {
+  @apply pointer-events-none;
+}
+.disableSelection .Text,
+.disableSelection .Count,
+.clone .Text,
+.clone .Count {
+  @apply select-none;
+  -webkit-user-select: none;
+}
+.Collapse svg {
+  @apply transition-transform duration-200;
+}
+.Collapse.collapsed svg {
+  @apply -rotate-90;
+}
