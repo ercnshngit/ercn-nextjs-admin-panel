@@ -1,17 +1,9 @@
 import { createMenu } from "@/services/menu";
 import { deletePage, getPage, updatePage } from "@/services/pages";
-import { CircleIcon } from "lucide-react";
-import { TfiLayoutSliderAlt } from "react-icons/tfi";
-import {
-  MdBusinessCenter,
-  MdSettingsInputComponent,
-  MdStorage,
-} from "react-icons/md";
+import { DATABASE_TABLE } from "@/types/config";
 import { BsFillMenuButtonFill } from "react-icons/bs";
 import { HiOutlineDocumentDuplicate } from "react-icons/hi";
-import { AiOutlineComment } from "react-icons/ai";
-import { FaSleigh, FaUserTie } from "react-icons/fa";
-import { DATABASE_TABLE } from "@/types/config";
+import { MdSettingsInputComponent } from "react-icons/md";
 
 export const IMAGE_URL = process.env.NEXT_PUBLIC_IMAGE_URL || "";
 
