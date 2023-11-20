@@ -17,6 +17,7 @@ const tableNames = [
   "menu",
   "menu_type",
   "language",
+  "config",
 ] as const;
 
 export const DATABASE_TABLES: DATABASE_TABLE<(typeof tableNames)[number]>[] = [
