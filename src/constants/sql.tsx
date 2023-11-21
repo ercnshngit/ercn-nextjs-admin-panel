@@ -1,3 +1,6 @@
+import { DatabaseTable } from "@/lib/database/models";
+import { title } from "process";
+
 export class SqlConstants {
     static SELECT = " SELECT ";
     static FROM = " FROM ";
@@ -99,7 +102,7 @@ export class SqlDataType {
     static REAL = "REAL";
     static DOUBLE = "DOUBLE";
     static CHAR = "CHAR";
-    static VARCHAR = "VARCHAR";
+    static VARCHAR = "VARCHAR(255)";
     static TEXT = "TEXT";
     static DATE = "DATE";
     static TIME = "TIME";

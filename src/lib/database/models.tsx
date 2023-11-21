@@ -1,14 +1,65 @@
+import { SqlDataType } from "@/constants/sql";
+
 export class DatabaseTable {
 
     static TABLE = "database_table";
     static ALIAS = "dbt";
 
     static ID = "id";
-    static NAME = "name";
-    static ICON = "icon";
-    static IS_HIDDEN = "is_hidden";
-    static CAN_CREATE = "can_create";
-    static CAN_UPDATE = "can_update";
+    static NAME = {
+        title: "name",
+        type: SqlDataType.VARCHAR,
+        nullable: false,
+        default: null,
+    }
+    static ICON = {
+        title: "icon",
+        type: SqlDataType.VARCHAR,
+        nullable: true,
+        default: null,
+    }
+    static IS_HIDDEN = {
+        title: "is_hidden",
+        type: SqlDataType.BOOLEAN,
+        nullable: true,
+        default: null,
+    }
+    static CAN_CREATE = {
+        title: "can_create",
+        type: SqlDataType.BOOLEAN,
+        nullable: true,
+        default: null,
+    }
+    static CAN_UPDATE = {
+        title: "can_create",
+        type: SqlDataType.BOOLEAN,
+        nullable: true,
+        default: null,
+    }
+}
+
+export class Type {
+
+    static TABLE = "type";
+    static ALIAS = "t";
+
+    static ID = "id";
+    static NAME = {
+        title: "name",
+        type: SqlDataType.VARCHAR,
+        nullable: false,
+        default: null,
+    }
+    static TYPE_CATEGORY_ID = {
+        title: "type_category_id",
+        type: SqlDataType.INT,
+        nullable: false,
+        default: null,
+    }
+
+    static CATEGORY_INPUT_TYPE = 0;
+    static CATEGORY_COLUMN_RELATION_TYPE = 1;
+    static CATEGORY_DATABASE_TABLE_COLUMN_TYPE = 2;
 
 }
 
@@ -18,21 +69,117 @@ export class DatabaseTableColumn {
     static ALIAS = "dbtc";
 
     static ID = "id";
-    static NAME = "name";
-    static TABLE_ID = "table_id"; // TABLE_ID --> DATABASE_TABLE (id)
-    static TYPE_ID = "type_id"; // TYPE_ID --> TYPE (id)
-    static IS_PRIMARY = "is_primary";
-    static IS_REQUIRED = "is_required";
-    static IS_UNIQUE = "is_unique";
-    static IS_HIDDEN = "is_hidden";
-    static IS_FILTERABLE = "is_filterable";
-    static IS_SEARCHABLE = "is_searchable";
-    static IS_SORTABLE = "is_sortable";
-    static INPUT_TYPE_ID = "input_type_id"; // INPUT_TYPE_ID --> TYPE (id)
-    static CREATE_CRUD_OPTION_ID = "create_crud_option_id"; // CREATE_CRUD_OPTION_ID --> CRUD_OPTION (id)
-    static UPDATE_CRUD_OPTION_ID = "update_crud_option_id"; // UPDATE_CRUD_OPTION_ID --> CRUD_OPTION (id)
-    static READ_CRUD_OPTION_ID = "read_crud_option_id"; // READ_CRUD_OPTION_ID --> CRUD_OPTION (id)
+    static NAME = {
+        title: "name",
+        type: SqlDataType.VARCHAR,
+        nullable: false,
+        default: null,
+    }
+    static TABLE_ID = {
+        title: "table_id",
+        type: SqlDataType.INT,
+        nullable: false,
+        default: null,
+    }
+    static TYPE_ID = {
+        title: "type_id",
+        type: SqlDataType.INT,
+        nullable: false,
+        default: null,
+    }
+    static IS_PRIMARY = {
+        title: "is_primary",
+        type: SqlDataType.BOOLEAN,
+        nullable: true,
+        default: false,
+    }
+    static IS_REQUIRED = {
+        title: "is_required",
+        type: SqlDataType.BOOLEAN,
+        nullable: true,
+        default: false,
+    }
+    static IS_UNIQUE = {
+        title: "is_unique",
+        type: SqlDataType.BOOLEAN,
+        nullable: true,
+        default: false,
+    }
+    static IS_HIDDEN = {
+        title: "is_hidden",
+        type: SqlDataType.BOOLEAN,
+        nullable: true,
+        default: false,
+    }
+    static IS_FILTERABLE = {
+        title: "is_filterable",
+        type: SqlDataType.BOOLEAN,
+        nullable: true,
+        default: false,
+    }
+    static IS_SEARCHABLE = {
+        title: "is_searchable",
+        type: SqlDataType.BOOLEAN,
+        nullable: true,
+        default: false,
+    }
+    static IS_SORTABLE = {
+        title: "is_sortable",
+        type: SqlDataType.BOOLEAN,
+        nullable: true,
+        default: false,
+    }
+    static INPUT_TYPE_ID = {
+        title: "input_type_id",
+        type: SqlDataType.INT,
+        nullable: true,
+        default: null,
+    }
+    static CREATE_CRUD_OPTION_ID = {
+        title: "create_crud_option_id",
+        type: SqlDataType.INT,
+        nullable: true,
+        default: null,
+    }
+    static UPDATE_CRUD_OPTION_ID = {
+        title: "update_crud_option_id",
+        type: SqlDataType.INT,
+        nullable: true,
+        default: null,
+    }
+    static READ_CRUD_OPTION_ID = {
+        title: "read_crud_option_id",
+        type: SqlDataType.INT,
+        nullable: true,
+        default: null,
+    }
 
+    static RELATIONS = [
+        {
+            table: DatabaseTable.TABLE,
+            column: this.TABLE_ID.title,
+            referenced_column: DatabaseTable.ID,
+            foreign_key_name: "fk_" + this.ALIAS + "_" + this.TABLE_ID.title,
+            on_update: "CASCADE",
+            on_delete: "CASCADE",
+        },
+        {
+            table: Type.TABLE,
+            column: this.TYPE_ID.title,
+            referenced_column: Type.ID,
+            foreign_key_name: "fk_" + this.ALIAS + "_" + this.TYPE_ID.title,
+            on_update: "CASCADE",
+            on_delete: "CASCADE",
+        },
+        {
+            table: Type.TABLE,
+            column: this.INPUT_TYPE_ID.title,
+            referenced_column: Type.ID,
+            foreign_key_name: "fk_" + this.ALIAS + "_" + this.INPUT_TYPE_ID.title,
+            on_update: "CASCADE",
+            on_delete: "CASCADE",
+        }
+    ]
 }
 
 export class ColumnRelation {
@@ -41,14 +188,91 @@ export class ColumnRelation {
     static ALIAS = "cr";
 
     static ID = "id";
-    static TABLE_ID = "table_id"; // TABLE_ID --> DATABASE_TABLE (id)
-    static REFERENCED_TABLE_ID = "referenced_table_id"; // REFERENCED_TABLE_ID --> DATABASE_TABLE (id)
-    static PIVOT_TABLE_ID = "pivot_table_id"; // PIVOT_TABLE_ID --> DATABASE_TABLE (id) nullable
-    static COLUMN_ID = "column_id"; // COLUMN_ID --> DATABASE_TABLE_COLUMN (id)
-    static REFERENCED_COLUMN_ID = "referenced_column_id"; // REFERENCED_COLUMN_ID --> DATABASE_TABLE_COLUMN (id)
-    static RELATION_TYPE_ID = "relation_type_id"; // RELATION_TYPE_ID --> TYPE (id)
-    static FOREIGN_KEY_NAME = "foreign_key_name";
+    static TABLE_ID = {
+        title: "table_id",
+        type: SqlDataType.INT,
+        nullable: false,
+        default: null,
+    }
+    static REFERENCED_TABLE_ID = {
+        title: "referenced_table_id",
+        type: SqlDataType.INT,
+        nullable: false,
+        default: null,
+    }
+    static PIVOT_TABLE_ID = {
+        title: "pivot_table_id",
+        type: SqlDataType.INT,
+        nullable: true,
+        default: null,
+    }
+    static COLUMN_ID = {
+        title: "column_id",
+        type: SqlDataType.INT,
+        nullable: false,
+        default: null,
+    }
+    static REFERENCED_COLUMN_ID = {
+        title: "referenced_column_id",
+        type: SqlDataType.INT,
+        nullable: false,
+        default: null,
+    }
+    static RELATION_TYPE_ID = {
+        title: "relation_type_id",
+        type: SqlDataType.INT,
+        nullable: false,
+        default: null,
+    }
+    static FOREIGN_KEY_NAME = {
+        title: "foreign_key_name",
+        type: SqlDataType.VARCHAR,
+        nullable: true,
+        default: null,
+    }
 
+    static RELATIONS = [
+        {
+            table: DatabaseTable.TABLE,
+            column: this.TABLE_ID.title,
+            referenced_column: DatabaseTable.ID,
+            foreign_key_name: "fk_" + this.ALIAS + "_" + this.TABLE_ID.title,
+            on_update: "CASCADE",
+            on_delete: "CASCADE",
+        },
+        {
+            table: DatabaseTable.TABLE,
+            column: this.REFERENCED_TABLE_ID.title,
+            referenced_column: DatabaseTable.ID,
+            foreign_key_name: "fk_" + this.ALIAS + "_" + this.REFERENCED_TABLE_ID.title,
+            on_update: "CASCADE",
+            on_delete: "CASCADE",
+        },
+        {
+            table: DatabaseTable.TABLE,
+            column: this.PIVOT_TABLE_ID.title,
+            referenced_column: DatabaseTable.ID,
+            foreign_key_name: "fk_" + this.ALIAS + "_" + this.PIVOT_TABLE_ID.title,
+            on_update: "CASCADE",
+            on_delete: "CASCADE",
+        },
+        {
+            table: DatabaseTableColumn.TABLE,
+            column: this.COLUMN_ID.title,
+            referenced_column: DatabaseTableColumn.ID,
+            foreign_key_name: "fk_" + this.ALIAS + "_" + this.COLUMN_ID.title,
+            on_update: "CASCADE",
+            on_delete: "CASCADE",
+        },
+        {
+            table: DatabaseTableColumn.TABLE,
+            column: this.REFERENCED_COLUMN_ID.title,
+            referenced_column: DatabaseTableColumn.ID,
+            foreign_key_name: "fk_" + this.ALIAS + "_" + this.REFERENCED_COLUMN_ID.title,
+            on_update: "CASCADE",
+            on_delete: "CASCADE",
+        }
+    ]
 }
 
 export class CrudOption {
@@ -57,28 +281,44 @@ export class CrudOption {
     static ALIAS = "co";
 
     static ID = "id";
-    static IS_HIDDEN = "is_hidden";
-    static IS_REQUIRED = "is_required";
-    static IS_READONLY = "is_readonly";
-    static INPUT_TYPE_ID = "input_type_id"; // INPUT_TYPE_ID --> TYPE (id)
+    static IS_HIDDEN = {
+        title: "is_hidden",
+        type: SqlDataType.BOOLEAN,
+        nullable: true,
+        default: false,
+    }
+    static IS_REQUIRED = {
+        title: "is_required",
+        type: SqlDataType.BOOLEAN,
+        nullable: true,
+        default: false,
+    }
+    static IS_READONLY = {
+        title: "is_readonly",
+        type: SqlDataType.BOOLEAN,
+        nullable: true,
+        default: false,
+    }
+    static INPUT_TYPE_ID = {
+        title: "input_type_id",
+        type: SqlDataType.INT,
+        nullable: true,
+        default: null,
+    }
 
+    static RELATIONS = [
+        {
+            table: Type.TABLE,
+            column: this.INPUT_TYPE_ID.title,
+            referenced_column: Type.ID,
+            foreign_key_name: "fk_" + this.ALIAS + "_" + this.INPUT_TYPE_ID.title,
+            on_update: "CASCADE",
+            on_delete: "CASCADE",
+        }
+    ]
 }
 
-export class Type {
 
-    static TABLE = "type";
-    static ALIAS = "t";
-
-    static ID = "id";
-    static NAME = "name";
-    static TYPE_CATEGORY_ID = "type_category_id";
-
-
-    static CATEGORY_INPUT_TYPE = 0;
-    static CATEGORY_COLUMN_RELATION_TYPE = 1;
-    static CATEGORY_DATABASE_TABLE_COLUMN_TYPE = 2;
-
-}
 
 export class Option {
 
@@ -86,11 +326,41 @@ export class Option {
     static ALIAS = "o";
 
     static ID = "id";
-    static LABEL = "label";
-    static VALUE = "value";
-    static ICON = "icon";
-    static COLUMN_ID = "column_id"; // COLUMN_ID --> DATABASE_TABLE_COLUMN (id)
+    static LABEL = {
+        title: "label",
+        type: SqlDataType.VARCHAR,
+        nullable: false,
+        default: null,
+    }
+    static VALUE = {
+        title: "value",
+        type: SqlDataType.VARCHAR,
+        nullable: false,
+        default: null,
+    }
+    static ICON = {
+        title: "icon",
+        type: SqlDataType.VARCHAR,
+        nullable: true,
+        default: null,
+    }
+    static COLUMN_ID = {
+        title: "column_id",
+        type: SqlDataType.INT,
+        nullable: true,
+        default: null,
+    }
 
+    static RELATIONS = [
+        {
+            table: DatabaseTableColumn.TABLE,
+            column: this.COLUMN_ID.title,
+            referenced_column: DatabaseTableColumn.ID,
+            foreign_key_name: "fk_" + this.ALIAS + "_" + this.COLUMN_ID.title,
+            on_update: "CASCADE",
+            on_delete: "CASCADE",
+        }
+    ]
 }
 
 export class Page {
