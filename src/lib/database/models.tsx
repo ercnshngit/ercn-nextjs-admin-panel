@@ -19,8 +19,8 @@ export class DatabaseTableColumn {
 
     static ID = "id";
     static NAME = "name";
-    static TABLE_ID = "table_id";
-    static TYPE_ID = "type_id";
+    static TABLE_ID = "table_id"; // TABLE_ID --> DATABASE_TABLE (id)
+    static TYPE_ID = "type_id"; // TYPE_ID --> TYPE (id)
     static IS_PRIMARY = "is_primary";
     static IS_REQUIRED = "is_required";
     static IS_UNIQUE = "is_unique";
@@ -28,10 +28,10 @@ export class DatabaseTableColumn {
     static IS_FILTERABLE = "is_filterable";
     static IS_SEARCHABLE = "is_searchable";
     static IS_SORTABLE = "is_sortable";
-    static INPUT_TYPE_ID = "input_type_id";
-    static CREATE_CRUD_OPTION_ID = "create_crud_option_id";
-    static UPDATE_CRUD_OPTION_ID = "update_crud_option_id";
-    static READ_CRUD_OPTION_ID = "read_crud_option_id";
+    static INPUT_TYPE_ID = "input_type_id"; // INPUT_TYPE_ID --> TYPE (id)
+    static CREATE_CRUD_OPTION_ID = "create_crud_option_id"; // CREATE_CRUD_OPTION_ID --> CRUD_OPTION (id)
+    static UPDATE_CRUD_OPTION_ID = "update_crud_option_id"; // UPDATE_CRUD_OPTION_ID --> CRUD_OPTION (id)
+    static READ_CRUD_OPTION_ID = "read_crud_option_id"; // READ_CRUD_OPTION_ID --> CRUD_OPTION (id)
 
 }
 
@@ -41,12 +41,12 @@ export class ColumnRelation {
     static ALIAS = "cr";
 
     static ID = "id";
-    static TABLE_ID = "table_id";
-    static REFERENCED_TABLE_ID = "referenced_table_id";
-    static PIVOT_TABLE_ID = "pivot_table_id";
-    static COLUMN_ID = "column_id";
-    static REFERENCED_COLUMN_ID = "referenced_column_id";
-    static RELATION_TYPE_ID = "relation_type_id";
+    static TABLE_ID = "table_id"; // TABLE_ID --> DATABASE_TABLE (id)
+    static REFERENCED_TABLE_ID = "referenced_table_id"; // REFERENCED_TABLE_ID --> DATABASE_TABLE (id)
+    static PIVOT_TABLE_ID = "pivot_table_id"; // PIVOT_TABLE_ID --> DATABASE_TABLE (id) nullable
+    static COLUMN_ID = "column_id"; // COLUMN_ID --> DATABASE_TABLE_COLUMN (id)
+    static REFERENCED_COLUMN_ID = "referenced_column_id"; // REFERENCED_COLUMN_ID --> DATABASE_TABLE_COLUMN (id)
+    static RELATION_TYPE_ID = "relation_type_id"; // RELATION_TYPE_ID --> TYPE (id)
     static FOREIGN_KEY_NAME = "foreign_key_name";
 
 }
@@ -60,7 +60,7 @@ export class CrudOption {
     static IS_HIDDEN = "is_hidden";
     static IS_REQUIRED = "is_required";
     static IS_READONLY = "is_readonly";
-    static INPUT_TYPE_ID = "input_type_id";
+    static INPUT_TYPE_ID = "input_type_id"; // INPUT_TYPE_ID --> TYPE (id)
 
 }
 
@@ -89,6 +89,6 @@ export class Option {
     static LABEL = "label";
     static VALUE = "value";
     static ICON = "icon";
-    static COLUMN_ID = "column_id";
+    static COLUMN_ID = "column_id"; // COLUMN_ID --> DATABASE_TABLE_COLUMN (id)
 
 }

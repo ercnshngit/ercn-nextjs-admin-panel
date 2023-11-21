@@ -88,3 +88,30 @@ export class SqlConstants {
         return this.INSERT_INTO + tableName + columns + this.VALUES + values;
     }
 }
+
+export class SqlDataType {
+
+    static BOOLEAN = "BOOLEAN";
+    static INT = "INT";
+    static SMALLINT = "SMALLINT";
+    static TINYINT = "TINYINT";
+    static BIGINT = "BIGINT";
+    static REAL = "REAL";
+    static DOUBLE = "DOUBLE";
+    static CHAR = "CHAR";
+    static VARCHAR = "VARCHAR";
+    static TEXT = "TEXT";
+    static DATE = "DATE";
+    static TIME = "TIME";
+    static TIMESTAMP = "TIMESTAMP";
+    static BLOB = "BLOB";
+    static CLOB = "CLOB";
+    static UUID = "UUID";
+    static JSON = "JSON";
+    static JSONB = "JSONB";
+    static XML = "XML";
+    static ARRAY = "ARRAY";
+    static RANGE = "RANGE";
+    static ENUM = "ENUM";
+
+}
