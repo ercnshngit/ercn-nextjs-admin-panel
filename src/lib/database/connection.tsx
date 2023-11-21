@@ -9,6 +9,7 @@ export const db = {
 
 async function connect() {
     try {
+        if (db.initialized) { return; }
         const connection = await mysql.createConnection({
             host: process.env.DB_HOST,
             port: process.env.DB_PORT ? +process.env.DB_PORT : 3306,
