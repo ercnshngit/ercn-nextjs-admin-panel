@@ -92,3 +92,43 @@ export class Option {
     static COLUMN_ID = "column_id"; // COLUMN_ID --> DATABASE_TABLE_COLUMN (id)
 
 }
+
+export class Page {
+
+    static TABLE = "page";
+    static ALIAS = "p";
+
+    static ID = "id";
+    static TITLE = "title";
+    static DESC = "description";
+    static IMAGE = "image";
+    static SLUG = "slug";
+    static CONFIG_ID = "config_id";
+    static LANGUAGE_CODE = "language_code";
+    static BACKGROUND_IMG = "background_image";
+
+}
+
+export class PageComponent {
+
+    static TABLE = "page_component";
+    static ALIAS = "pc";
+
+    static ID = "id";
+    static PAGE_ID = "page_id";
+    static COMPONENT_ID = "component_id";
+    static VALUE = "value";
+    static INDEX = "index";
+    static CSS = "css";
+}
+
+export class PageConfig {
+
+    static TABLE = "page_config";
+    static ALIAS = "pc";
+
+    static ID = "id";
+    static TITLE = "title";
+    static CSS = "css";
+
+}
