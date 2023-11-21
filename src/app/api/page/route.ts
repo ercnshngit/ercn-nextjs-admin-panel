@@ -1,4 +1,5 @@
 import { db } from "@/lib/database/connection";
+import { Page } from "@/lib/database/models";
 
 export async function GET(request: Request) {
     /* async getPages(res) {
@@ -19,6 +20,9 @@ export async function GET(request: Request) {
     }*/
 
     const conn = await db.connection();
-    const pages = await conn?.query({ sql: `SELECT table_name as 'table_name' , JSON_ARRAYAGG(JSON_OBJECT('name',column_name , 'type' , data_type)) as 'columns' from information_schema.columns WHERE table_schema ='" + process.env.DB_NAME + "' GROUP BY table_name` });
-    return new Response(JSON.stringify(pages));
+    const pages = await conn?.query({ sql: `SELECT * FROM ${Page.TABLE}` });
+    if (pages && pages.length > 0) {
+        return new Response(JSON.stringify(pages));
+    }
+    else return new Response(JSON.stringify({ message: 'Sayfa bulunamadı.' }));
 }
