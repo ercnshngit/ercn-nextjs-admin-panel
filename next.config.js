@@ -2,7 +2,10 @@
 
 const nextConfig = {
   images: {
-    domains: ["localhost", process.env.NEXT_PUBLIC_IMAGE_URL],
+    domains: [
+      "localhost",
+      process.env.NEXT_PUBLIC_IMAGE_URL && process.env.NEXT_PUBLIC_IMAGE_URL,
+    ],
   },
   serverRuntimeConfig: {
     dbConfig: {
