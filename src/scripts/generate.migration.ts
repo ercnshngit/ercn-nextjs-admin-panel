@@ -1,4 +1,4 @@
-import { db } from "../lib/database/connection";
+import { db, sortTables } from "../lib/database/connection";
 import QuerryBuilder from "../lib/database/mysql/querry.builder";
 
-QuerryBuilder.genMigration(db.tables);
+QuerryBuilder.genMigration(sortTables(db.tables));

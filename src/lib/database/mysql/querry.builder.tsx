@@ -4,7 +4,7 @@ import { db, sortTables } from "../connection";
 import { getColumnMetadata, getRelationMetadata, getTableMetadata } from "../decorators";
 import { Table, TableColumn, TableModel, TableRelation } from "../table.model";
 import { config } from "dotenv";
-import { X } from "lucide-react";
+import { table } from "console";
 
 config();
 export default class QuerryBuilder {
@@ -97,25 +97,44 @@ export default class QuerryBuilder {
 
     }
     static async genMigration(tables: any[]) {
-        tables.forEach(element => {
+        tables.forEach(async element => {
             const tableInfo = getTableMetadata(element);
             const columns = getColumnMetadata(element);
             const relations = getRelationMetadata(element);
-            if (tableInfo == undefined || columns == undefined) {
+            if (tableInfo == undefined || columns == undefined) {   // Table bilgisi yoksa çık.
                 return;
             }
-            this.checkColumns(tableInfo);
-            console.log(this.checkRelations(tableInfo));
-            this.compareColumns(tableInfo, columns);
+            if((await this.checkTableExistence(tableInfo)) == 0){   // Table yoksa oluştur.
+                const createTableQuerry = this.createTableQuerry(tableInfo, columns, relations);
+                console.log({table_name : tableInfo.name , create_table_querry : createTableQuerry});
+                return;
+            }
+            const differenceOfColumns = await this.compareColumns(tableInfo, columns);
+            const differenceOfColumnsQuerry = this.createColumnDifferenceQuerry(tableInfo, differenceOfColumns);
+            if(relations != undefined){                             // Relation var ise gir ve kontrol et.
+                const differenceOfRelations = await this.compareRelations(tableInfo, relations);
+                const differenceOfRelationsQuerry = this.createRelationDifferenceQuerry(tableInfo, differenceOfRelations);
+                console.log({table_name : tableInfo.name , relations_difference : differenceOfRelations, relations_difference_querry : differenceOfRelationsQuerry});
+            }
+            console.log({table_name : tableInfo.name , columns_difference_querry : differenceOfColumnsQuerry });
         });
 
     }
+
+    static async checkTableExistence(tableInfo: Table) {
+        const querry = SqlConstants.IS_TABLE_EXISTS_QUERRY(tableInfo.name);
+        const conn = await db.connection()
+        const result = await conn?.query({ sql: querry });
+        const table = result?.[0] as RowDataPacket[];
+        return table[0].STATUS;
+    }
+
     static async checkColumns(tableInfo: Table) {
         const querry = SqlConstants.SHOW_TABLE_COLUMNS_QUERRY(tableInfo.name);
         const conn = await db.connection()
         const result = await conn?.query({ sql: querry });
-
         const columns = result?.[0] as RowDataPacket[];
+        if(!columns) return ;
         return columns.map((column: RowDataPacket) => {
             const tableColumn: TableColumn = {
                 title: column.Field,
@@ -128,13 +147,19 @@ export default class QuerryBuilder {
         });
     }
 
+    static createTableQuerry(tableInfo: Table, columns: any[], relations: any[] | undefined) {
+        const querry = SqlConstants.CREATE_TABLE_QUERRY(tableInfo.name, columns,relations);
+        return querry;
+    }
+
     static async checkRelations(tableInfo: Table) {
         const querry = SqlConstants.SHOW_TABLE_RELATIONS_QUERRY(tableInfo.name);
         const conn = await db.connection()
         const result = await conn?.query({ sql: querry });
-        const columns = result?.[0] as RowDataPacket[];
-
-        return columns.map((column: RowDataPacket) => {
+        const relations = result?.[0] as RowDataPacket[];
+        
+        if(!relations) return ;
+        return relations.map((column: RowDataPacket) => {
             const tableRelation: TableRelation = {
                 table_name: column.REFERENCED_TABLE_NAME,
                 column: column.COLUMN_NAME,
@@ -143,6 +168,7 @@ export default class QuerryBuilder {
                 on_update: column.UPDATE_RULE,
                 on_delete: column.DELETE_RULE,
             };
+            
             return tableRelation;
         });
 
@@ -156,6 +182,7 @@ export default class QuerryBuilder {
         const addedColumns: TableColumn[] = [];
 
         const columnsArray = Object.values(columns);
+        if (!existingColumns) return;
         for (const existingColumn of existingColumns) {
             const modelColumn = columnsArray.find((col) => col.title === existingColumn.title);
             if (!modelColumn) {
@@ -179,12 +206,95 @@ export default class QuerryBuilder {
                 addedColumns.push(modelColumn);
             }
         }
-        console.log(addedColumns);
         return {
             addedColumns,
             modifiedColumns,
             removedColumns,
         };
+    }
+
+    static async compareRelations(tableInfo: Table, relations: any[]) {
+        const existingRelations = await this.checkRelations(tableInfo);
+        const modifiedRelations: TableRelation[] = [];
+        const removedRelations: TableRelation[] = [];
+        const addedRelations: TableRelation[] = [];
+
+        const relationsArray = Object.values(relations);
+        if (!existingRelations) return;
+        for (const existingRelation of existingRelations) {
+            
+            const modelRelation = relationsArray.find((col) => col.column === existingRelation.column);
+            
+            if (!modelRelation) {
+                removedRelations.push(existingRelation);
+            } else {
+                // Compare relation properties
+                if (
+                    existingRelation.table_name !== modelRelation.table_name ||
+                    existingRelation.referenced_column !== modelRelation.referenced_column ||
+                    existingRelation.foreign_key_name !== modelRelation.foreign_key_name ||
+                    existingRelation.on_update !== modelRelation.on_update ||
+                    existingRelation.on_delete !== modelRelation.on_delete
+                ) {
+                    modifiedRelations.push(modelRelation);
+                }
+            }
+        }
+
+        // Model columns that are not in the existing columns
+        for (const modelRelation of relationsArray) {
+            const existingRelation = existingRelations.find((col) => col.column === modelRelation.column);
+            if (!existingRelation) {
+                addedRelations.push(modelRelation);
+            }
+        }
+        return {
+            addedRelations,
+            modifiedRelations,
+            removedRelations,
+        };
+    }
+
+    static createColumnDifferenceQuerry(tableInfo: Table, columns: any) {
+        const { addedColumns, modifiedColumns, removedColumns } = columns;
+        let querry = '';
+        if (addedColumns.length > 0) {
+            addedColumns.forEach((column: TableColumn) => {
+                querry += SqlConstants.ADD_COLUMN_QUERRY(tableInfo.name, column);
+            });
+        }
+        if (modifiedColumns.length > 0) {
+            modifiedColumns.forEach((column: TableColumn) => {
+                querry += SqlConstants.MODIFY_COLUMN_QUERRY(tableInfo.name, column);
+            });
+        }
+        if (removedColumns.length > 0) {
+            removedColumns.forEach((column : TableColumn) => {
+                querry += SqlConstants.REMOVE_COLUMN_QUERRY(tableInfo.name, column);
+            });
+        }
+        return querry;
+    }
+
+    static createRelationDifferenceQuerry(tableInfo: Table, relations: any) {
+        const { addedRelations, modifiedRelations, removedRelations } = relations;
+        let querry = '';
+        if (addedRelations.length > 0) {
+            addedRelations.forEach((relation: TableRelation) => {
+                querry += SqlConstants.ADD_RELATION_QUERRY(tableInfo.name, relation);
+            });
+        }
+        if (modifiedRelations.length > 0) {
+            modifiedRelations.forEach((relation: TableRelation) => {
+                querry += SqlConstants.MODIFY_RELATION_QUERRY(tableInfo.name, relation);
+            });
+        }
+        if (removedRelations.length > 0) {
+            removedRelations.forEach((relation : TableRelation) => {
+                querry += SqlConstants.REMOVE_RELATION_QUERRY(tableInfo.name, relation);
+            });
+        }
+        return querry;
     }
 }
 

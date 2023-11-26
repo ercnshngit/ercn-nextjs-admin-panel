@@ -2,7 +2,7 @@ import { SqlDataType } from "../../../constants/sql";
 import { Model, Column } from "../decorators";
 
 @Model({ name: "database_table", alias: "t" })
-export class DatabaseTable {
+export class DatabaseTable{
     static TABLE = "database_table";
     static ALIAS = "dbt";
 
@@ -54,4 +54,5 @@ export class DatabaseTable {
         default_value: false
     })
     can_update?: boolean;
+
 }

@@ -1,3 +1,4 @@
+import { TableColumn, TableRelation } from "@/lib/database/table.model";
 import { config } from "dotenv";
 
 config();
@@ -72,6 +73,7 @@ export class SqlConstants {
     static REFERENCED_COLUMN_NAME = " REFERENCED_COLUMN_NAME ";
     static UPDATE_RULE = " UPDATE_RULE ";
     static DELETE_RULE = " DELETE_RULE ";
+    static INFORMATION_SCHEMA_TABLES = " information_schema.TABLES ";
     static INFORMATION_SCHEMA_KEY_COLUMN_USAGE = " information_schema.KEY_COLUMN_USAGE ";
     static INFORMATION_SCHEMA_REFERENTIAL_CONSTRAINTS = " information_schema.REFERENTIAL_CONSTRAINTS ";
     static CONSTRAINT_SCHEMA = " CONSTRAINT_SCHEMA ";
@@ -97,6 +99,10 @@ export class SqlConstants {
         return this.DELETE_FROM + tableName + this.WHERE + "id = " + id;
     }
 
+    static ALTER_TABLE_QUERRY(tableName: string) {
+        return "ALTER TABLE " + tableName + " ";
+    }
+
     static INSERT_QUERRY(tableName: string, body: any) {
         let columns = " (";
         let values = " (";
@@ -109,8 +115,29 @@ export class SqlConstants {
         return this.INSERT_INTO + tableName + columns + this.VALUES + values;
     }
 
+
     static SHOW_TABLE_COLUMNS_QUERRY(tableName: string) {
         return this.SHOW + this.COLUMNS + this.FROM + tableName;
+    }
+
+    static IS_TABLE_EXISTS_QUERRY(tableName: string) {
+        return this.SELECT + this.SELECT_COUNT + this.AS + "STATUS" + this.FROM + this.INFORMATION_SCHEMA_TABLES + this.WHERE + this.TABLE_NAME + " = '" + tableName + "'";
+    }
+
+    static CREATE_TABLE_QUERRY(tableName: string, columns: TableColumn[], relations: TableRelation[] | undefined) {
+        let querry = "CREATE TABLE " + tableName + " (";
+        const columnsArray = Object.values(columns);
+        columnsArray.forEach((column: TableColumn) => {
+            querry += column.title + " " + (column.data_type ? column.data_type : " ") + (column.nullable ? " NULL " : " NOT NULL ") + (column.default_value ? " DEFAULT " + column.default_value : "") + (column.is_primary_key ? " PRIMARY KEY AUTO_INCREMENT , " : ", ");
+        });
+        if(relations){
+            const relationsArray = Object.values(relations);
+            relationsArray.forEach((relation: TableRelation) => {
+                querry += "CONSTRAINT " + relation.foreign_key_name + " FOREIGN KEY (" + relation.column + ") REFERENCES " + relation.table_name + "(" + relation.referenced_column + ") ON DELETE " + relation.on_delete + " ON UPDATE " + relation.on_update + ", ";
+            });
+        }
+        querry = querry.substring(0, querry.length - 2) + ");";
+        return querry;
     }
 
     static SHOW_TABLE_RELATIONS_QUERRY(tableName: string) {
@@ -127,8 +154,31 @@ export class SqlConstants {
             this.JOIN + this.INFORMATION_SCHEMA_REFERENTIAL_CONSTRAINTS + " rc " +
             this.WHERE +
             "rc." + this.CONSTRAINT_SCHEMA + " = '" + process.env.DB_NAME + "'" + this.AND +
+            "kcu." + this.CONSTRAINT_SCHEMA + " = '" + process.env.DB_NAME + "'" + this.AND +
             "rc." + this.TABLE_NAME + " = '" + tableName + "'" + this.AND +
-            "rc." + this.REFERENCED_TABLE_NAME + this.IS_NOT_NULL;
+            "kcu." + this.TABLE_NAME + " = '" + tableName + "'" + this.AND +
+            "rc." + this.CONSTRAINT_NAME + " = " + "kcu." + this.CONSTRAINT_NAME + this.AND +
+            "rc." + this.REFERENCED_TABLE_NAME + this.IS_NOT_NULL + this.AND +
+            "kcu." + this.REFERENCED_COLUMN_NAME + this.IS_NOT_NULL +
+            this.GROUP_BY + "rc." + this.CONSTRAINT_NAME;
+    }
+    static ADD_COLUMN_QUERRY(tableName: string, column : TableColumn) {
+        return this.ALTER_TABLE_QUERRY(tableName) + "ADD COLUMN " + column.title + " " + (column.data_type ? column.data_type : " ") + (column.nullable ? " NULL " : " NOT NULL ") + (column.default_value ? " DEFAULT " + column.default_value : "");
+    }
+    static MODIFY_COLUMN_QUERRY(tableName: string, column : TableColumn) {
+        return this.ALTER_TABLE_QUERRY(tableName) + "MODIFY COLUMN " + column.title + " " + (column.data_type ? column.data_type : " ") + (column.nullable ? " NULL " : " NOT NULL ") + (column.default_value ? " DEFAULT " + column.default_value : "");
+    }
+    static REMOVE_COLUMN_QUERRY(tableName: string, column : TableColumn) {
+        return this.ALTER_TABLE_QUERRY(tableName) + "DROP COLUMN " + column.title;
+    }
+    static ADD_RELATION_QUERRY(tableName: string, relation : TableRelation) {
+        return this.ALTER_TABLE_QUERRY(tableName) + "ADD CONSTRAINT " + relation.foreign_key_name + " FOREIGN KEY (" + relation.column + ") REFERENCES " + relation.table_name + "(" + relation.referenced_column + ") ON DELETE " + relation.on_delete + " ON UPDATE " + relation.on_update;
+    }
+    static REMOVE_RELATION_QUERRY(tableName: string, relation : TableRelation) {
+        return this.ALTER_TABLE_QUERRY(tableName) + "DROP FOREIGN KEY " + relation.foreign_key_name;
+    }
+    static MODIFY_RELATION_QUERRY(tableName: string, relation : TableRelation) {
+        return this.ALTER_TABLE_QUERRY(tableName) + "DROP FOREIGN KEY " + relation.foreign_key_name + ", ADD CONSTRAINT " + relation.foreign_key_name + " FOREIGN KEY (" + relation.column + ") REFERENCES " + relation.table_name + "(" + relation.referenced_column + ") ON DELETE " + relation.on_delete + " ON UPDATE " + relation.on_update;
     }
 }
 
