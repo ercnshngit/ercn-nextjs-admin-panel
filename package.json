@@ -9,7 +9,10 @@
     "lint": "next lint",
     "kill-port": "kill-port 5006",
     "export": "next export",
-    "build-and-start": "next build && next start -p 5006"
+    "build-and-start": "next build && next start -p 5006",
+    "create-basic-dbs": "ts-node -e \"import QuerryBuilder from './src/lib/database/mysql/querry.builder'; QuerryBuilder.createTablesQuerry()\"",
+    "create-basic-db": "ts-node ./src/scripts/database.config.ts",
+    "gen-mig": "ts-node ./src/scripts/generate.migration.ts"
   },
   "dependencies": {
     "@dnd-kit/sortable": "^7.0.2",
@@ -40,6 +43,7 @@
     "clsx": "^2.0.0",
     "cmdk": "^0.2.0",
     "date-fns": "^2.30.0",
+    "dotenv": "^16.3.1",
     "eslint": "8.48.0",
     "eslint-config-next": "13.4.19",
     "jose": "^4.14.6",
@@ -62,6 +66,7 @@
     "tailwind-merge": "^1.14.0",
     "tailwindcss": "3.3.3",
     "tailwindcss-animate": "^1.0.7",
+    "ts-node": "^10.9.1",
     "universal-cookie": "^6.1.0"
   },
   "devDependencies": {

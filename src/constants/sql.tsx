@@ -1,5 +1,6 @@
-import { DatabaseTable } from "@/lib/database/models";
-import { title } from "process";
+import { config } from "dotenv";
+
+config();
 
 export class SqlConstants {
     static SELECT = " SELECT ";
@@ -58,6 +59,23 @@ export class SqlConstants {
     static SELECT_COUNT = " COUNT(*) ";
     static SELECT_DISTINCT = " DISTINCT ";
     static SELECT_DISTINCT_ON = " DISTINCT ON ";
+    static CASCADE = "CASCADE";
+    static RESTRICT = "RESTRICT";
+    static NO_ACTION = "NO ACTION";
+    static SHOW = " SHOW ";
+    static COLUMNS = " COLUMNS ";
+    static TABLES = " TABLES ";
+    static TABLE_NAME = " TABLE_NAME ";
+    static COLUMN_NAME = " COLUMN_NAME ";
+    static CONSTRAINT_NAME = " CONSTRAINT_NAME ";
+    static REFERENCED_TABLE_NAME = " REFERENCED_TABLE_NAME ";
+    static REFERENCED_COLUMN_NAME = " REFERENCED_COLUMN_NAME ";
+    static UPDATE_RULE = " UPDATE_RULE ";
+    static DELETE_RULE = " DELETE_RULE ";
+    static INFORMATION_SCHEMA_KEY_COLUMN_USAGE = " information_schema.KEY_COLUMN_USAGE ";
+    static INFORMATION_SCHEMA_REFERENTIAL_CONSTRAINTS = " information_schema.REFERENTIAL_CONSTRAINTS ";
+    static CONSTRAINT_SCHEMA = " CONSTRAINT_SCHEMA ";
+
 
     static SELECT_ALL_QUERRY(tableName: string) {
         return this.SELECT + this.SELECT_ALL + this.FROM + tableName;
@@ -90,21 +108,44 @@ export class SqlConstants {
         values = values.substring(0, values.length - 2) + ") ";
         return this.INSERT_INTO + tableName + columns + this.VALUES + values;
     }
+
+    static SHOW_TABLE_COLUMNS_QUERRY(tableName: string) {
+        return this.SHOW + this.COLUMNS + this.FROM + tableName;
+    }
+
+    static SHOW_TABLE_RELATIONS_QUERRY(tableName: string) {
+        return this.SELECT +
+            "kcu." + this.REFERENCED_COLUMN_NAME + ", " +
+            "kcu." + this.COLUMN_NAME + ", " +
+            "rc." + this.REFERENCED_TABLE_NAME + ", " +
+            "rc." + this.TABLE_NAME + ", " +
+            "rc." + this.CONSTRAINT_NAME + ", " +
+            "rc." + this.UPDATE_RULE + ", " +
+            "rc." + this.DELETE_RULE +
+            this.FROM +
+            this.INFORMATION_SCHEMA_KEY_COLUMN_USAGE + " kcu " +
+            this.JOIN + this.INFORMATION_SCHEMA_REFERENTIAL_CONSTRAINTS + " rc " +
+            this.WHERE +
+            "rc." + this.CONSTRAINT_SCHEMA + " = '" + process.env.DB_NAME + "'" + this.AND +
+            "rc." + this.TABLE_NAME + " = '" + tableName + "'" + this.AND +
+            "rc." + this.REFERENCED_TABLE_NAME + this.IS_NOT_NULL;
+    }
 }
 
 export class SqlDataType {
 
-    static BOOLEAN = "BOOLEAN";
-    static INT = "INT";
+    static BOOLEAN = "tinyint(1)";
+    static INT = "int(11)";
     static SMALLINT = "SMALLINT";
-    static TINYINT = "TINYINT";
+    static TINYINT = "tinyint";
     static BIGINT = "BIGINT";
     static REAL = "REAL";
     static DOUBLE = "DOUBLE";
     static CHAR = "CHAR";
-    static VARCHAR = "VARCHAR(255)";
+    static VARCHAR = "varchar(255)";
     static TEXT = "TEXT";
     static DATE = "DATE";
+    static DATETIME = "datetime(6)";
     static TIME = "TIME";
     static TIMESTAMP = "TIMESTAMP";
     static BLOB = "BLOB";
