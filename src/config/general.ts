@@ -5,7 +5,7 @@ import { BsFillMenuButtonFill } from "react-icons/bs";
 import { HiOutlineDocumentDuplicate } from "react-icons/hi";
 import { MdSettingsInputComponent } from "react-icons/md";
 
-export const IMAGE_URL = process.env.NEXT_PUBLIC_IMAGE_URL || "";
+export const IMAGE_URL = process.env.NEXT_PUBLIC_FILE_URL || "";
 
 const tableNames = [
   "page",

@@ -85,15 +85,21 @@ export class Page {
 }
 
 export class PageComponent {
+  static TABLE = "page_component";
+  static ALIAS = "pc";
 
-    static TABLE = "page_component";
-    static ALIAS = "pc";
+  static ID = "id";
+  static PAGE_ID = "page_id";
+  static COMPONENT_ID = "component_id";
+  static VALUE = "value";
+  static INDEX = "index";
+  static CSS = "css";
+}
 
-    static ID = "id";
-    static PAGE_ID = "page_id";
-    static COMPONENT_ID = "component_id";
-    static VALUE = "value";
-    static INDEX = "index";
-    static CSS = "css";
+export class ComponentType {
+  static TABLE = "component_type";
+  static ALIAS = "ct";
+
+  //TODO: Doldurulacak
 }
 

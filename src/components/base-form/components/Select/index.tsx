@@ -62,13 +62,17 @@ function RelationOptions({ field }: { field: DATABASE_TABLE_COLUMN }) {
     getTable({ tableName: joinedTable.name })
   );
 
+  console.log(data);
+
   const options: OPTION[] =
-    data?.map((item: any) => {
-      return {
-        label: item[field.relation!.displayColumn!],
-        value: item[field.relation!.keyColumn!],
-      };
-    }) ?? [];
+    data !== ""
+      ? data?.map((item: any) => {
+          return {
+            label: item[field.relation!.displayColumn!],
+            value: item[field.relation!.keyColumn!],
+          };
+        })
+      : [];
 
   return (
     <>

@@ -80,21 +80,21 @@ export class SqlConstants {
     static CONSTRAINT_SCHEMA = " CONSTRAINT_SCHEMA ";
 
 
-    static SELECT_ALL_QUERRY(tableName: string) {
-        return this.SELECT + this.SELECT_ALL + this.FROM + tableName;
-    }
+  static SELECT_ALL_QUERRY(tableName: string) {
+    return this.SELECT + this.SELECT_ALL + this.FROM + tableName;
+  }
 
-    static SELECT_ALL_WITH_WHERE_QUERRY(tableName: string, where: string) {
-        return this.SELECT_ALL_QUERRY(tableName) + this.WHERE + where;
-    }
+  static SELECT_ALL_WITH_WHERE_QUERRY(tableName: string, where: string) {
+    return this.SELECT_ALL_QUERRY(tableName) + this.WHERE + where;
+  }
 
-    static SELECT_ALL_WITH_ID_QUERRY(tableName: string, id: number) {
-        return this.SELECT_ALL_WITH_WHERE_QUERRY(tableName, "id = " + id);
-    }
+  static SELECT_ALL_WITH_ID_QUERRY(tableName: string, id: number) {
+    return this.SELECT_ALL_WITH_WHERE_QUERRY(tableName, "id = " + id);
+  }
 
-    static UPDATE_QUERRY_WITH_ID(tableName: string, set: string, id: number) {
-        return this.UPDATE + tableName + this.SET + set + this.WHERE + "id = " + id;
-    }
+  static UPDATE_QUERRY_WITH_ID(tableName: string, set: string, id: number) {
+    return this.UPDATE + tableName + this.SET + set + this.WHERE + "id = " + id;
+  }
 
     static DELETE_WITH_ID_QUERRY(tableName: string, id: number) {
         return this.DELETE_FROM + tableName + this.WHERE + "id = " + id;

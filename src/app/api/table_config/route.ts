@@ -18,21 +18,3 @@ export async function POST(
     return new Response(JSON.stringify({ status: "error", message: error }));
   }
 }
-
-// TÜm verileri döner
-export async function GET(
-  request: Request,
-  { params }: { params: { table_name: string } }
-) {
-  const table_name = params.table_name;
-  try {
-    const conn = await db.connection();
-    const result = await conn?.query({
-      sql: SqlConstants.SELECT_ALL_QUERRY(table_name),
-    });
-    console.log(result);
-    return new Response(JSON.stringify(result?.[0]));
-  } catch (error) {
-    return new Response(JSON.stringify({ status: "error", message: error }));
-  }
-}
