@@ -3,13 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 5006",
+    "dev": "next dev -p 5007",
     "build": "next build",
-    "start": "next start -p 5006",
+    "start": "next start -p 5007",
     "lint": "next lint",
-    "kill-port": "kill-port 5006",
+    "kill-port": "kill-port 5007",
     "export": "next export",
-    "build-and-start": "next build && next start -p 5006"
+    "build-and-start": "next build && next start -p 5007"
   },
   "dependencies": {
     "@dnd-kit/sortable": "^7.0.2",
