@@ -1,10 +1,17 @@
 import { SqlDataType } from "../../../constants/sql";
+import { BaseModel } from "../base/base.model";
 import { Model, Column } from "../decorators";
 
 @Model({ name: "database_table", alias: "t" })
-export class DatabaseTable{
+export class DatabaseTable extends BaseModel{
     static TABLE = "database_table";
     static ALIAS = "dbt";
+
+    static NAME = "name";
+
+    constructor(){
+        super(DatabaseTable);
+    }
 
     @Column({
         title: "id",

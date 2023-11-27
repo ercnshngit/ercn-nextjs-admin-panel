@@ -40,3 +40,13 @@ export interface TableRelation {
     on_update?: string | "NO ACTION",
     on_delete?: string | "NO ACTION"
 }
+
+export interface TableJoin {
+    join_type: string,
+    join_table_name: string,
+    join_table_column_name: string,
+    join_table_alias: string,
+    table_name: string,
+    table_column_name: string,
+    table_alias: string
+}

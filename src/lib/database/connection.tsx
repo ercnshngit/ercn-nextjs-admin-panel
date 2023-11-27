@@ -65,3 +65,11 @@ export function sortTables(tables: any[]) {  // Relationlara gore tableları sı
     });
     return sortedTables;
 }
+
+export function getRepository(table: any) { // Table ait repository döndürülüyor.
+    
+    const tableInfo = getTableMetadata(table);
+    if (!tableInfo) { return null; }
+    
+
+}

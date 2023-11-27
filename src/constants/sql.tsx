@@ -1,4 +1,4 @@
-import { TableColumn, TableRelation } from "@/lib/database/table.model";
+import { TableColumn, TableJoin, TableRelation } from "@/lib/database/table.model";
 import { config } from "dotenv";
 
 config();
@@ -25,6 +25,7 @@ export class SqlConstants {
     static AS = " AS ";
     static INNER = " INNER ";
     static LEFT = " LEFT ";
+    static LEFT_JOIN = " LEFT JOIN ";
     static RIGHT = " RIGHT ";
     static FULL = " FULL ";
     static OUTER = " OUTER ";
@@ -115,6 +116,24 @@ export class SqlConstants {
         return this.INSERT_INTO + tableName + columns + this.VALUES + values;
     }
 
+    static SELECT_WITH_MULTIPLE_JOIN_QUERRY(tableName: string, alias: string, joins: string, where: string) {
+        let querry = this.SELECT + "*" + this.FROM + tableName + this.AS + alias + " ";
+        querry += joins + " ";
+        querry += this.WHERE + where;
+        return querry;
+    }
+
+    static JOIN_QUERRY_CREATOR(join_type: string, join_table_name: string, join_table_alias: string, join_table_column_name: string, table_column_name: string, table_name?: string, table_alias?: string | undefined) {
+        return join_type + join_table_name + this.AS + join_table_alias + this.ON + (join_table_alias != undefined ? join_table_alias : join_table_name) + "." + join_table_column_name + " = " + table_alias + "." + table_column_name;
+    }
+
+    static JOIN_QUERRY_BUILDER(TableJoins: TableJoin[]) {
+        let joins = "";
+        TableJoins.forEach(join => {
+            joins += this.JOIN_QUERRY_CREATOR(join.join_type, join.join_table_name, join.join_table_alias, join.join_table_column_name, join.table_column_name, join.table_name, join.table_alias) + " ";
+        });
+        return joins;
+    }
 
     static SHOW_TABLE_COLUMNS_QUERRY(tableName: string) {
         return this.SHOW + this.COLUMNS + this.FROM + tableName;
