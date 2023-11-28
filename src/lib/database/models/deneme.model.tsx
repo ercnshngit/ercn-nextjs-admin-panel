@@ -1,8 +1,8 @@
-import { SqlDataType } from "../../../constants/sql";
-import { Column, Model } from "../decorators";
+import { SqlDataType } from "../../../../constants/sql";
+import { Column, Model } from "../../decorators";
 
-@Model({ name: "deneme", alias: "d" , references: ["database_table"] })
-export class Deneme{
+@Model({ name: "deneme", alias: "d", references: ["database_table"] })
+export class Deneme {
     static TABLE = "deneme";
     static ALIAS = "d";
 

@@ -1,5 +1,5 @@
-import { SqlDataType, SqlConstants } from "../../../constants/sql";
-import { Model, Column, Relation } from "../decorators";
+import { SqlDataType, SqlConstants } from "../../../../constants/sql";
+import { Model, Column, Relation } from "../../decorators";
 
 @Model({
     name: "column_option",
