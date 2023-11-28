@@ -1,5 +1,5 @@
-import { getRelationMetadata, getTableMetadata } from "@/lib/database/decorators";
-import { TableColumn, DetatiledRelation, TableRelation, BasicRelation } from "@/lib/database/table.model";
+import { getRelationMetadata, getTableMetadata } from "../lib/database/decorators";
+import { TableColumn, DetatiledRelation, TableRelation, BasicRelation } from "../lib/database/table.model";
 import { config } from "dotenv";
 
 config();
@@ -208,13 +208,13 @@ export class SqlConstants {
             this.GROUP_BY + "rc." + this.CONSTRAINT_NAME;
     }
     static ADD_COLUMN_QUERRY(tableName: string, column: TableColumn) {
-        return this.ALTER_TABLE_QUERRY(tableName) + "ADD COLUMN " + column.title + " " + (column.data_type ? column.data_type : " ") + (column.nullable ? " NULL " : " NOT NULL ") + (column.default_value ? " DEFAULT " + column.default_value : "");
+        return this.ALTER_TABLE_QUERRY(tableName) + "ADD COLUMN " + column.title + " " + (column.data_type ? column.data_type : " ") + (column.nullable ? " NULL " : " NOT NULL ") + (column.default_value ? " DEFAULT " + column.default_value : "") + ";";
     }
     static MODIFY_COLUMN_QUERRY(tableName: string, column: TableColumn) {
-        return this.ALTER_TABLE_QUERRY(tableName) + "MODIFY COLUMN " + column.title + " " + (column.data_type ? column.data_type : " ") + (column.nullable ? " NULL " : " NOT NULL ") + (column.default_value ? " DEFAULT " + column.default_value : "");
+        return this.ALTER_TABLE_QUERRY(tableName) + "MODIFY COLUMN " + column.title + " " + (column.data_type ? column.data_type : " ") + (column.nullable ? " NULL " : " NOT NULL ") + (column.default_value ? " DEFAULT " + column.default_value : "") + ";";
     }
     static REMOVE_COLUMN_QUERRY(tableName: string, column: TableColumn) {
-        return this.ALTER_TABLE_QUERRY(tableName) + "DROP COLUMN " + column.title;
+        return this.ALTER_TABLE_QUERRY(tableName) + "DROP COLUMN " + column.title + ";";
     }
     static ADD_RELATION_QUERRY(tableName: string, relation: TableRelation) {
         return this.ALTER_TABLE_QUERRY(tableName) + "ADD CONSTRAINT " + relation.foreign_key_name + " FOREIGN KEY (" + relation.column + ") REFERENCES " + relation.table_name + "(" + relation.referenced_column + ") ON DELETE " + relation.on_delete + " ON UPDATE " + relation.on_update;
