@@ -10,13 +10,13 @@ import { CrudOption } from './models/crud-option.model';
 import { DatabaseTableColumn } from './models/database-table-column.model';
 import { DatabaseTable } from './models/database-table.model';
 import { Deneme } from './models/deneme.model';
-import { Type } from './models/type.model';
+import { DataType } from './models/type.model';
 
 export const db = {
     connection: connect,
     initialized: false,
     active_connection: null as any | null,
-    tables: [DatabaseTable, DatabaseTableColumn, ColumnOption, Type, ColumnRelation, CrudOption, Deneme, Block, Types, Component, BlockComponent],
+    tables: [DatabaseTable, DatabaseTableColumn, ColumnOption, DataType, ColumnRelation, CrudOption, Deneme, Block, Types, Component, BlockComponent],
 };
 
 // initialize db and models, called on first api request from /helpers/api/api-handler.js

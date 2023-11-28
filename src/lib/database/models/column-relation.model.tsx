@@ -103,7 +103,7 @@ export class ColumnRelation {
         default_value: null,
     })
     @Relation({
-        table_name: "type",
+        table_name: "data_type",
         column: "relation_type_id",
         referenced_column: "id",
         foreign_key_name: "fk_cr_relation_type_id",

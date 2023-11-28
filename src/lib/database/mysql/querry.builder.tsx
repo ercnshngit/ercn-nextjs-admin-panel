@@ -10,7 +10,7 @@ config();
 export default class QuerryBuilder {
     static async createTablesQuerry(): Promise<string | undefined | any> {
         let allTableDatas: any[] = [];
-        let allTableQuerries = '';
+        let allTableQuerries: any[] = [];
         try {
             const sortedTables = sortTables(db.tables)
             sortedTables.forEach(table => {
@@ -24,17 +24,19 @@ export default class QuerryBuilder {
             });
             const db_name = '`' + process.env.DB_NAME + '`';
             let useDbQuery = `USE ${db_name};`;
+            allTableQuerries.push(useDbQuery);
             allTableDatas.forEach((table: TableModel) => {
                 if (!table.columns) {
                     table.columns = [];
                 }
-
+                const tableName = "`" + table.table_info?.name + "`";
                 let createTableQuery = `CREATE TABLE IF NOT EXISTS ${table.table_info?.name} (`;
                 for (const column_name in table.columns) {
                     if (table.columns.hasOwnProperty(column_name)) {
                         const column = table.columns[column_name];
                         if (column.title && column.data_type) {
-                            let columnDefinition = `${column.title} ${column.data_type}`;
+                            const columnName = column.title != "order" ? column.title : "`" + column.title + "`";
+                            let columnDefinition = `${columnName} ${column.data_type}`;
 
                             if (!column.nullable) {
                                 columnDefinition += ' NOT NULL';
@@ -64,9 +66,10 @@ export default class QuerryBuilder {
                 for (const relation_name in table.references) {
                     if (table.references.hasOwnProperty(relation_name)) {
                         const relation = table.references[relation_name];
+                        const relationColumn = "`" + relation.column + "`";
                         let relationDefinition = '';
                         let fk_name = relation.foreign_key_name == undefined ? "fk_" + table.table_info?.name + "_" + relation.column : relation.foreign_key_name
-                        relationDefinition += `CONSTRAINT ${fk_name} FOREIGN KEY (${relation.column}) REFERENCES ${relation.table_name}(${relation.referenced_column})`;
+                        relationDefinition += `CONSTRAINT ${fk_name} FOREIGN KEY (${relationColumn}) REFERENCES ${tableName}(${relation.referenced_column})`;
                         if (relation.on_update) {
                             relationDefinition += ` ON UPDATE ${relation.on_update}`;
                         }
@@ -79,14 +82,14 @@ export default class QuerryBuilder {
                 // Remove the trailing comma and newline
                 createTableQuery = createTableQuery.slice(0, -1);
                 createTableQuery += ');';
-                allTableQuerries += createTableQuery;
+                allTableQuerries.push(createTableQuery);
             });
-            allTableQuerries = useDbQuery + allTableQuerries;
             const conn = await db.connection();
             let new_result: any[] = [];
-            console.log(allTableQuerries);
-            const result = await conn?.query({ sql: allTableQuerries });
-            Object.assign(new_result, result?.[0]);
+            allTableQuerries.forEach(async element => {
+                const result = await conn.query({ sql: element });
+                new_result.push(result?.[0]);
+            });
             console.log(new_result);
             return;
         } catch (error) {
@@ -97,6 +100,7 @@ export default class QuerryBuilder {
 
     }
     static async genMigration(tables: any[]) {
+        let allQueries = [] as any;
         tables.forEach(async element => {
             const tableInfo = getTableMetadata(element);
             const columns = getColumnMetadata(element);
@@ -104,28 +108,36 @@ export default class QuerryBuilder {
             if (tableInfo == undefined || columns == undefined) {   // Table bilgisi yoksa çık.
                 return;
             }
-            if((await this.checkTableExistence(tableInfo)) == 0){   // Table yoksa oluştur.
+            if ((await this.checkTableExistence(tableInfo)) == 0) {   // Table yoksa oluştur.
                 const createTableQuerry = this.createTableQuerry(tableInfo, columns, relations);
-                console.log({table_name : tableInfo.name , create_table_querry : createTableQuerry});
+                allQueries.push(createTableQuerry);
+                //console.log({table_name : tableInfo.name , create_table_querry : createTableQuerry});
                 return;
             }
             const differenceOfColumns = await this.compareColumns(tableInfo, columns);
             const differenceOfColumnsQuerry = this.createColumnDifferenceQuerry(tableInfo, differenceOfColumns);
-            if(relations != undefined){                             // Relation var ise gir ve kontrol et.
+            allQueries.push(differenceOfColumnsQuerry);
+            if (relations != undefined) {                             // Relation var ise gir ve kontrol et.
                 const differenceOfRelations = await this.compareRelations(tableInfo, relations);
                 const differenceOfRelationsQuerry = this.createRelationDifferenceQuerry(tableInfo, differenceOfRelations);
-                console.log({table_name : tableInfo.name , relations_difference : differenceOfRelations, relations_difference_querry : differenceOfRelationsQuerry});
+                allQueries.push(differenceOfRelationsQuerry);
+                //console.log({table_name : tableInfo.name , relations_difference : differenceOfRelations, relations_difference_querry : differenceOfRelationsQuerry});
             }
-            console.log({table_name : tableInfo.name , columns_difference_querry : differenceOfColumnsQuerry });
+            //console.log({table_name : tableInfo.name , columns_difference_querry : differenceOfColumnsQuerry });
         });
-
+        console.log(allQueries);
+        allQueries.forEach((element: any) => {
+            console.log(element);
+        });
     }
 
     static async checkTableExistence(tableInfo: Table) {
         const querry = SqlConstants.IS_TABLE_EXISTS_QUERRY(tableInfo.name);
         const conn = await db.connection()
+        console.log(querry);
         const result = await conn?.query({ sql: querry });
         const table = result?.[0] as RowDataPacket[];
+        console.log(table[0].STATUS);
         return table[0].STATUS;
     }
 
@@ -134,7 +146,7 @@ export default class QuerryBuilder {
         const conn = await db.connection()
         const result = await conn?.query({ sql: querry });
         const columns = result?.[0] as RowDataPacket[];
-        if(!columns) return ;
+        if (!columns) return;
         return columns.map((column: RowDataPacket) => {
             const tableColumn: TableColumn = {
                 title: column.Field,
@@ -148,7 +160,7 @@ export default class QuerryBuilder {
     }
 
     static createTableQuerry(tableInfo: Table, columns: any[], relations: any[] | undefined) {
-        const querry = SqlConstants.CREATE_TABLE_QUERRY(tableInfo.name, columns,relations);
+        const querry = SqlConstants.CREATE_TABLE_QUERRY(tableInfo.name, columns, relations);
         return querry;
     }
 
@@ -157,8 +169,8 @@ export default class QuerryBuilder {
         const conn = await db.connection()
         const result = await conn?.query({ sql: querry });
         const relations = result?.[0] as RowDataPacket[];
-        
-        if(!relations) return ;
+
+        if (!relations) return;
         return relations.map((column: RowDataPacket) => {
             const tableRelation: TableRelation = {
                 table_name: column.REFERENCED_TABLE_NAME,
@@ -168,7 +180,7 @@ export default class QuerryBuilder {
                 on_update: column.UPDATE_RULE,
                 on_delete: column.DELETE_RULE,
             };
-            
+
             return tableRelation;
         });
 
@@ -222,9 +234,9 @@ export default class QuerryBuilder {
         const relationsArray = Object.values(relations);
         if (!existingRelations) return;
         for (const existingRelation of existingRelations) {
-            
+
             const modelRelation = relationsArray.find((col) => col.column === existingRelation.column);
-            
+
             if (!modelRelation) {
                 removedRelations.push(existingRelation);
             } else {
@@ -269,7 +281,7 @@ export default class QuerryBuilder {
             });
         }
         if (removedColumns.length > 0) {
-            removedColumns.forEach((column : TableColumn) => {
+            removedColumns.forEach((column: TableColumn) => {
                 querry += SqlConstants.REMOVE_COLUMN_QUERRY(tableInfo.name, column);
             });
         }
@@ -290,7 +302,7 @@ export default class QuerryBuilder {
             });
         }
         if (removedRelations.length > 0) {
-            removedRelations.forEach((relation : TableRelation) => {
+            removedRelations.forEach((relation: TableRelation) => {
                 querry += SqlConstants.REMOVE_RELATION_QUERRY(tableInfo.name, relation);
             });
         }

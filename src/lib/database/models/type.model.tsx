@@ -1,10 +1,10 @@
 import { SqlDataType } from "../../../constants/sql";
 import { Model, Column } from "../decorators";
 
-@Model({ name: "type", alias: "t" })
-export class Type {
-    static TABLE = "type";
-    static ALIAS = "t";
+@Model({ name: "data_type", alias: "t" })
+export class DataType {
+    static TABLE = "data_type";
+    static ALIAS = "dt";
 
     static CATEGORY_INPUT_TYPE = 0;
     static CATEGORY_COLUMN_RELATION_TYPE = 1;

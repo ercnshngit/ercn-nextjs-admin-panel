@@ -47,7 +47,7 @@ export class DatabaseTableColumn extends BaseModel {
         default_value: null
     })
     @Relation({
-        table_name: "type",
+        table_name: "data_type",
         column: "type_id",
         referenced_column: "id",
         foreign_key_name: "fk_dbtc_type_id",

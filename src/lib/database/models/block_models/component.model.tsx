@@ -31,6 +31,7 @@ export class Component {
         default_value: null,
         is_primary_key: false
     })
+    tag?: string;
 
     @Column({
         title: "type_id",
@@ -39,8 +40,6 @@ export class Component {
         default_value: null,
         is_primary_key: false
     })
-    type_id?: number;
-
     @Relation({
         table_name: "types",
         column: "type_id",
@@ -49,5 +48,5 @@ export class Component {
         on_update: "CASCADE",
         on_delete: "CASCADE",
     })
-    type?: any;
+    type_id?: number;
 }
