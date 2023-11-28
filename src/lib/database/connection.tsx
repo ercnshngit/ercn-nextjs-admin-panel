@@ -13,6 +13,7 @@ import { DataType } from './models/type.model';
 import { Prop } from './models/block_models/prop.model';
 import { BlockComponentProp } from './models/block_models/block-component-prop.model';
 import { ComponentProp } from './models/block_models/component_prop.model';
+import { SqlConstants } from '../../constants/sql';
 
 export const db = {
     connection: connect,
@@ -26,6 +27,7 @@ export const db = {
 async function connect() {
     try {
         if (db.active_connection) {              // Aktif bağlantı varsa onu döndür.
+            const result = await db.active_connection.query(SqlConstants.USE_DATABASE_QUERRY())
             return db.active_connection;
         }
         const connection = await mysql.createConnection({

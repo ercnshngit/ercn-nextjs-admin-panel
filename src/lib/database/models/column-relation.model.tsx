@@ -1,7 +1,7 @@
 import { SqlDataType, SqlConstants } from "../../../constants/sql";
 import { Column, Model, Relation } from "../decorators";
 
-@Model({ name: "column_relation", alias: "cr", references: ["database_table_column", "database_table", "type"] })
+@Model({ name: "column_relation", alias: "cr", references: ["database_table_column", "database_table", "data_type"] })
 export class ColumnRelation {
 
     static TABLE = "column_relation";

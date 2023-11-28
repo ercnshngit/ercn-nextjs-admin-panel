@@ -68,7 +68,7 @@ export default class QuerryBuilder {
                         const relationColumn = "`" + relation.column + "`";
                         let relationDefinition = '';
                         let fk_name = relation.foreign_key_name == undefined ? "fk_" + table.table_info?.name + "_" + relation.column : relation.foreign_key_name
-                        relationDefinition += `CONSTRAINT ${fk_name} FOREIGN KEY (${relationColumn}) REFERENCES ${tableName}(${relation.referenced_column})`;
+                        relationDefinition += `CONSTRAINT ${fk_name} FOREIGN KEY (${relationColumn}) REFERENCES ${relation.table_name}(${relation.referenced_column})`;
                         if (relation.on_update) {
                             relationDefinition += ` ON UPDATE ${relation.on_update}`;
                         }
@@ -89,7 +89,7 @@ export default class QuerryBuilder {
                 const result = await conn.query({ sql: element });
                 new_result.push(result?.[0]);
             });
-            console.log(new_result);
+            console.log(allTableQuerries);
             return;
         } catch (error) {
             console.log(error);
@@ -99,7 +99,7 @@ export default class QuerryBuilder {
 
     }
     static async genMigration(tables: any[]) {
-        let allQueries = [] as any;
+        let allQueries: any[] = [];
         tables.forEach(async element => {
             const tableInfo = getTableMetadata(element);
             const columns = getColumnMetadata(element);
@@ -109,23 +109,31 @@ export default class QuerryBuilder {
             }
             if ((await this.checkTableExistence(tableInfo)) == 0) {   // Table yoksa oluştur.
                 const createTableQuerry = this.createTableQuerry(tableInfo, columns, relations);
+                if (createTableQuerry != '') {
+                    allQueries.push(createTableQuerry);
+                }
                 allQueries.push(createTableQuerry);
-                //console.log({table_name : tableInfo.name , create_table_querry : createTableQuerry});
+                //console.log({ table_name: tableInfo.name, create_table_querry: createTableQuerry });
                 return;
             }
             const differenceOfColumns = await this.compareColumns(tableInfo, columns);
             const differenceOfColumnsQuerry = this.createColumnDifferenceQuerry(tableInfo, differenceOfColumns);
-            allQueries.push(differenceOfColumnsQuerry);
+            if (differenceOfColumnsQuerry != '') {
+                allQueries.push(differenceOfColumnsQuerry);
+            }
+
             if (relations != undefined) {                             // Relation var ise gir ve kontrol et.
                 const differenceOfRelations = await this.compareRelations(tableInfo, relations);
                 const differenceOfRelationsQuerry = this.createRelationDifferenceQuerry(tableInfo, differenceOfRelations);
-                allQueries.push(differenceOfRelationsQuerry);
-                //console.log({table_name : tableInfo.name , relations_difference : differenceOfRelations, relations_difference_querry : differenceOfRelationsQuerry});
+                if (differenceOfRelationsQuerry != '') {
+                    allQueries.push(differenceOfRelationsQuerry);
+                }
+                //console.log({ table_name: tableInfo.name, relations_difference: differenceOfRelations, relations_difference_querry: differenceOfRelationsQuerry });
             }
-            //console.log({table_name : tableInfo.name , columns_difference_querry : differenceOfColumnsQuerry });
+            //console.log({ table_name: tableInfo.name, columns_difference_querry: differenceOfColumnsQuerry });
         });
-        console.log(allQueries);
-        allQueries.forEach((element: any) => {
+        const querriesArray = Object.values(allQueries);
+        querriesArray.forEach((element: any) => {
             console.log(element);
         });
     }
@@ -135,7 +143,6 @@ export default class QuerryBuilder {
         const conn = await db.connection()
         const result = await conn?.query({ sql: querry });
         const table = result?.[0] as RowDataPacket[];
-        console.log(table[0].STATUS);
         return table[0].STATUS;
     }
 

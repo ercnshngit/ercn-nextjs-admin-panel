@@ -5,12 +5,16 @@ import { FindOptions, Table } from "../table.model";
 export class BaseModel {
     constructor(modelClass: any) {
         this.modelClass = modelClass;
+        this.connect();
         this.table_data = getTableData(this.modelClass)
     }
 
     modelClass: any;
     table_data: Table | null;
 
+    async connect() {
+        await db.connection();
+    }
     async findAll() {
         const connection = await db.connection();
         const [rows, fields] = await connection.execute(`SELECT * FROM ${this.table_data}`);

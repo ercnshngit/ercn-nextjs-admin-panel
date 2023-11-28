@@ -79,7 +79,11 @@ export class SqlConstants {
     static INFORMATION_SCHEMA_KEY_COLUMN_USAGE = " information_schema.KEY_COLUMN_USAGE ";
     static INFORMATION_SCHEMA_REFERENTIAL_CONSTRAINTS = " information_schema.REFERENTIAL_CONSTRAINTS ";
     static CONSTRAINT_SCHEMA = " CONSTRAINT_SCHEMA ";
+    static TABLE_SCHEMA = " TABLE_SCHEMA ";
 
+    static USE_DATABASE_QUERRY() {
+        return "USE `" + process.env.DB_NAME + "`;";
+    }
 
     static SELECT_ALL_QUERY(tableName: string) {
         return this.SELECT + this.SELECT_ALL + this.FROM + tableName;
@@ -166,7 +170,8 @@ export class SqlConstants {
     }
 
     static IS_TABLE_EXISTS_QUERRY(tableName: string) {
-        return this.SELECT + this.SELECT_COUNT + this.AS + "STATUS" + this.FROM + this.INFORMATION_SCHEMA_TABLES + this.WHERE + this.TABLE_NAME + " = '" + tableName + "'";
+        return this.SELECT + this.SELECT_COUNT + this.AS + "STATUS" + this.FROM + this.INFORMATION_SCHEMA_TABLES + this.WHERE + this.TABLE_NAME + " = '" + tableName + "'" +
+            this.AND + this.TABLE_SCHEMA + " = '" + process.env.DB_NAME + "'";
     }
 
     static CREATE_TABLE_QUERRY(tableName: string, columns: TableColumn[], relations: TableRelation[] | undefined) {

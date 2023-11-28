@@ -31,7 +31,7 @@ export class Component {
         default_value: null,
         is_primary_key: false
     })
-    tag?: string;
+    ssss?: string;
 
     @Column({
         title: "type_id",

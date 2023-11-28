@@ -2,7 +2,7 @@ import { SqlDataType, SqlConstants } from "../../../constants/sql";
 import { BaseModel } from "../base/base.model";
 import { Model, Column, Relation } from "../decorators";
 
-@Model({ name: "database_table_column", alias: "dbtc", references: ["type", "crud_option"] })
+@Model({ name: "database_table_column", alias: "dbtc", references: ["data_type", "crud_option"] })
 export class DatabaseTableColumn extends BaseModel {
 
     static TABLE = "database_table_column";
@@ -119,7 +119,7 @@ export class DatabaseTableColumn extends BaseModel {
         default_value: null
     })
     @Relation({
-        table_name: "type",
+        table_name: "data_type",
         column: "input_type_id",
         referenced_column: "id",
         foreign_key_name: "fk_dbtc_input_type_id",

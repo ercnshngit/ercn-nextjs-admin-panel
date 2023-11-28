@@ -1,7 +1,7 @@
 import { SqlDataType } from "../../../constants/sql";
 import { Model, Column } from "../decorators";
 
-@Model({ name: "data_type", alias: "t" })
+@Model({ name: "data_type", alias: "dt" })
 export class DataType {
     static TABLE = "data_type";
     static ALIAS = "dt";

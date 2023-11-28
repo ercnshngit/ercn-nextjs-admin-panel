@@ -1,4 +1,3 @@
-import { DatabaseTableColumn } from "./models/database-table-column.model";
 import { DatabaseTable } from "./models/database-table.model";
 
 export class TableModel {

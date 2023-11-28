@@ -1,6 +1,7 @@
-import { SqlConstants } from "@/constants/sql";
-import { Block } from "@/lib/database/models/block_models/block.model";
-import { Types } from "@/lib/database/models/block_models/types.model";
+import { db } from "@/lib/database/connection";
+import { SqlConstants } from "../../../../../constants/sql";
+import { Block } from "../../../../../lib/database/models/block_models/block.model";
+import { Types } from "../../../../../lib/database/models/block_models/types.model";
 
 // TÜm verileri döner
 export async function GET(
@@ -9,6 +10,7 @@ export async function GET(
 ) {
     const id = params.id;
     try {
+        const conn = await db.connection();
         const block = new Block()
         const data = await block.find({
             where: "id = " + id, relation: {
