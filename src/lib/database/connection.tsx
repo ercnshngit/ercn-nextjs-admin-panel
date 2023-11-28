@@ -1,19 +1,23 @@
 import mysql from 'mysql2/promise';
 import { PageConfig } from './models';
-import { ColumnOption } from './models/column-option.model';
-import { ColumnRelation } from './models/column-relation.model';
-import { CrudOption } from './models/crud-option.model';
-import { DatabaseTableColumn } from './models/database-table-column.model';
-import { DatabaseTable } from './models/database-table.model';
-import { Type } from './models/type.model';
+import { ColumnOption } from './models/example_models/column-option.model';
+import { ColumnRelation } from './models/example_models/column-relation.model';
+import { CrudOption } from './models/example_models/crud-option.model';
+import { DatabaseTableColumn } from './models/example_models/database-table-column.model';
+import { DatabaseTable } from './models/example_models/database-table.model';
+import { Type } from './models/example_models/type.model';
 import { getTableMetadata } from './decorators';
-import { Deneme } from './models/deneme.model';
+import { Deneme } from './models/example_models/deneme.model';
+import { Types } from './models/block_models/types.model';
+import { Block } from './models/block_models/block.model';
+import { Component } from './models/block_models/component.model';
+import { BlockComponent } from './models/block_models/block-component.model';
 
 export const db = {
     connection: connect,
     initialized: false,
     active_connection: null as any | null,
-    tables: [DatabaseTable, DatabaseTableColumn, ColumnOption, Type, ColumnRelation, CrudOption, Deneme],
+    tables: [DatabaseTable, DatabaseTableColumn, ColumnOption, Type, ColumnRelation, CrudOption, Deneme, Block, Types, Component, BlockComponent],
 };
 
 // initialize db and models, called on first api request from /helpers/api/api-handler.js

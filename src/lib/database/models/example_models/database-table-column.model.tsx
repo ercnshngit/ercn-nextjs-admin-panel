@@ -1,6 +1,6 @@
-import { SqlDataType, SqlConstants } from "../../../constants/sql";
-import { BaseModel } from "../base/base.model";
-import { Model, Column, Relation } from "../decorators";
+import { SqlDataType, SqlConstants } from "../../../../constants/sql";
+import { BaseModel } from "../../base/base.model";
+import { Model, Column, Relation } from "../../decorators";
 
 @Model({ name: "database_table_column", alias: "dbtc", references: ["type", "crud_option"] })
 export class DatabaseTableColumn extends BaseModel {
