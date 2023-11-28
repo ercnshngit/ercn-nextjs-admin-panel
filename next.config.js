@@ -4,7 +4,6 @@ const nextConfig = {
   images: {
     domains: [
       "localhost",
-      process.env.NEXT_PUBLIC_FILE_URL && process.env.NEXT_PUBLIC_FILE_URL,
     ],
   },
   serverRuntimeConfig: {

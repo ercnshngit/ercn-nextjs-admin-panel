@@ -1,4 +1,5 @@
-import { TableColumn, TableJoin, TableRelation } from "@/lib/database/table.model";
+import { getRelationMetadata, getTableMetadata } from "@/lib/database/decorators";
+import { TableColumn, DetatiledRelation, TableRelation, BasicRelation } from "@/lib/database/table.model";
 import { config } from "dotenv";
 
 config();
@@ -80,21 +81,25 @@ export class SqlConstants {
     static CONSTRAINT_SCHEMA = " CONSTRAINT_SCHEMA ";
 
 
-  static SELECT_ALL_QUERRY(tableName: string) {
-    return this.SELECT + this.SELECT_ALL + this.FROM + tableName;
-  }
+    static SELECT_ALL_QUERY(tableName: string) {
+        return this.SELECT + this.SELECT_ALL + this.FROM + tableName;
+    }
 
-  static SELECT_ALL_WITH_WHERE_QUERRY(tableName: string, where: string) {
-    return this.SELECT_ALL_QUERRY(tableName) + this.WHERE + where;
-  }
+    static SELECT_ALL_WITH_ALIAS_QUERY(tableName: string, alias: string) {
+        return this.SELECT + this.SELECT_ALL + this.FROM + tableName + this.AS + alias;
+    }
 
-  static SELECT_ALL_WITH_ID_QUERRY(tableName: string, id: number) {
-    return this.SELECT_ALL_WITH_WHERE_QUERRY(tableName, "id = " + id);
-  }
+    static SELECT_ALL_WITH_WHERE_QUERRY(tableName: string, where: string) {
+        return this.SELECT_ALL_QUERY(tableName) + this.WHERE + where;
+    }
 
-  static UPDATE_QUERRY_WITH_ID(tableName: string, set: string, id: number) {
-    return this.UPDATE + tableName + this.SET + set + this.WHERE + "id = " + id;
-  }
+    static SELECT_ALL_WITH_ID_QUERRY(tableName: string, id: number) {
+        return this.SELECT_ALL_WITH_WHERE_QUERRY(tableName, "id = " + id);
+    }
+
+    static UPDATE_QUERRY_WITH_ID(tableName: string, set: string, id: number) {
+        return this.UPDATE + tableName + this.SET + set + this.WHERE + "id = " + id;
+    }
 
     static DELETE_WITH_ID_QUERRY(tableName: string, id: number) {
         return this.DELETE_FROM + tableName + this.WHERE + "id = " + id;
@@ -127,11 +132,32 @@ export class SqlConstants {
         return join_type + join_table_name + this.AS + join_table_alias + this.ON + (join_table_alias != undefined ? join_table_alias : join_table_name) + "." + join_table_column_name + " = " + table_alias + "." + table_column_name;
     }
 
-    static JOIN_QUERRY_BUILDER(TableJoins: TableJoin[]) {
+    static JOIN_QUERRY_BUILDER(model: any, relation: { detailed_relation?: DetatiledRelation[], basic_relation?: BasicRelation[] } | undefined) {
         let joins = "";
-        TableJoins.forEach(join => {
-            joins += this.JOIN_QUERRY_CREATOR(join.join_type, join.join_table_name, join.join_table_alias, join.join_table_column_name, join.table_column_name, join.table_name, join.table_alias) + " ";
-        });
+        const mainTableInfo = getTableMetadata(model);
+        if (mainTableInfo === undefined) return joins; // Table bilgisi yoksa çık.
+        if (relation === undefined) return joins; // Relation bilgisi yoksa çık.
+        if (relation?.detailed_relation !== undefined) {
+            const detailedJoins = Object.values(relation?.detailed_relation);
+            detailedJoins.forEach(join => {
+                joins += this.JOIN_QUERRY_CREATOR(join.join_type, join.join_table_name, join.join_table_alias, join.join_table_column_name, join.table_column_name, join.table_name, join.table_alias) + " ";
+            });
+        }
+        else if (relation?.basic_relation !== undefined) {
+            const basicJoins = Object.values(relation?.basic_relation);
+            basicJoins.forEach(join => {
+                const tableInfo = getTableMetadata(join.class);
+                const relations = getRelationMetadata(join.class);
+                if (tableInfo === undefined) return;
+                if (relations === undefined) return;
+                const relationsArray = Object.values(relations);
+                relationsArray?.forEach(relation => {
+                    if (relation.table_name !== mainTableInfo?.name) return;
+                    joins += this.JOIN_QUERRY_CREATOR(join.join_type, tableInfo?.name, tableInfo?.alias, relation.column, relation.referenced_column, mainTableInfo?.name, mainTableInfo?.alias) + " ";
+                });
+            });
+        }
+
         return joins;
     }
 
@@ -149,7 +175,7 @@ export class SqlConstants {
         columnsArray.forEach((column: TableColumn) => {
             querry += column.title + " " + (column.data_type ? column.data_type : " ") + (column.nullable ? " NULL " : " NOT NULL ") + (column.default_value ? " DEFAULT " + column.default_value : "") + (column.is_primary_key ? " PRIMARY KEY AUTO_INCREMENT , " : ", ");
         });
-        if(relations){
+        if (relations) {
             const relationsArray = Object.values(relations);
             relationsArray.forEach((relation: TableRelation) => {
                 querry += "CONSTRAINT " + relation.foreign_key_name + " FOREIGN KEY (" + relation.column + ") REFERENCES " + relation.table_name + "(" + relation.referenced_column + ") ON DELETE " + relation.on_delete + " ON UPDATE " + relation.on_update + ", ";
@@ -181,22 +207,22 @@ export class SqlConstants {
             "kcu." + this.REFERENCED_COLUMN_NAME + this.IS_NOT_NULL +
             this.GROUP_BY + "rc." + this.CONSTRAINT_NAME;
     }
-    static ADD_COLUMN_QUERRY(tableName: string, column : TableColumn) {
+    static ADD_COLUMN_QUERRY(tableName: string, column: TableColumn) {
         return this.ALTER_TABLE_QUERRY(tableName) + "ADD COLUMN " + column.title + " " + (column.data_type ? column.data_type : " ") + (column.nullable ? " NULL " : " NOT NULL ") + (column.default_value ? " DEFAULT " + column.default_value : "");
     }
-    static MODIFY_COLUMN_QUERRY(tableName: string, column : TableColumn) {
+    static MODIFY_COLUMN_QUERRY(tableName: string, column: TableColumn) {
         return this.ALTER_TABLE_QUERRY(tableName) + "MODIFY COLUMN " + column.title + " " + (column.data_type ? column.data_type : " ") + (column.nullable ? " NULL " : " NOT NULL ") + (column.default_value ? " DEFAULT " + column.default_value : "");
     }
-    static REMOVE_COLUMN_QUERRY(tableName: string, column : TableColumn) {
+    static REMOVE_COLUMN_QUERRY(tableName: string, column: TableColumn) {
         return this.ALTER_TABLE_QUERRY(tableName) + "DROP COLUMN " + column.title;
     }
-    static ADD_RELATION_QUERRY(tableName: string, relation : TableRelation) {
+    static ADD_RELATION_QUERRY(tableName: string, relation: TableRelation) {
         return this.ALTER_TABLE_QUERRY(tableName) + "ADD CONSTRAINT " + relation.foreign_key_name + " FOREIGN KEY (" + relation.column + ") REFERENCES " + relation.table_name + "(" + relation.referenced_column + ") ON DELETE " + relation.on_delete + " ON UPDATE " + relation.on_update;
     }
-    static REMOVE_RELATION_QUERRY(tableName: string, relation : TableRelation) {
+    static REMOVE_RELATION_QUERRY(tableName: string, relation: TableRelation) {
         return this.ALTER_TABLE_QUERRY(tableName) + "DROP FOREIGN KEY " + relation.foreign_key_name;
     }
-    static MODIFY_RELATION_QUERRY(tableName: string, relation : TableRelation) {
+    static MODIFY_RELATION_QUERRY(tableName: string, relation: TableRelation) {
         return this.ALTER_TABLE_QUERRY(tableName) + "DROP FOREIGN KEY " + relation.foreign_key_name + ", ADD CONSTRAINT " + relation.foreign_key_name + " FOREIGN KEY (" + relation.column + ") REFERENCES " + relation.table_name + "(" + relation.referenced_column + ") ON DELETE " + relation.on_delete + " ON UPDATE " + relation.on_update;
     }
 }

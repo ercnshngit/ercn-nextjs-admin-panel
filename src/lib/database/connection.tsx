@@ -13,14 +13,14 @@ export const db = {
     connection: connect,
     initialized: false,
     active_connection: null as any | null,
-    tables: [DatabaseTable, DatabaseTableColumn, ColumnOption, Type, ColumnRelation, CrudOption,Deneme],
+    tables: [DatabaseTable, DatabaseTableColumn, ColumnOption, Type, ColumnRelation, CrudOption, Deneme],
 };
 
 // initialize db and models, called on first api request from /helpers/api/api-handler.js
 
 async function connect() {
     try {
-        if(db.active_connection) {              // Aktif bağlantı varsa onu döndür.
+        if (db.active_connection) {              // Aktif bağlantı varsa onu döndür.
             return db.active_connection;
         }
         const connection = await mysql.createConnection({
@@ -66,10 +66,8 @@ export function sortTables(tables: any[]) {  // Relationlara gore tableları sı
     return sortedTables;
 }
 
-export function getRepository(table: any) { // Table ait repository döndürülüyor.
-    
+export function getTableData(table: any) { // Table ait repository döndürülüyor.
     const tableInfo = getTableMetadata(table);
     if (!tableInfo) { return null; }
-    
-
+    return tableInfo;
 }

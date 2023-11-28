@@ -28,7 +28,7 @@ export async function GET(
   try {
     const conn = await db.connection();
     const result = await conn?.query({
-      sql: SqlConstants.SELECT_ALL_QUERRY(table_name),
+      sql: SqlConstants.SELECT_ALL_QUERY(table_name),
     });
     console.log(result);
     return new Response(JSON.stringify(result?.[0]));

@@ -19,7 +19,7 @@ export class TableModel {
 
 export interface Table {
     name: string;
-    alias?: string;
+    alias: string;
     references?: string[];
 }
 
@@ -33,15 +33,17 @@ export interface TableColumn {
 }
 
 export interface TableRelation {
-    table_name?: string,
+    table_name: string,
     column: string,
-    referenced_column?: string,
-    foreign_key_name?: string | undefined,
+    referenced_column: string,
+    foreign_key_name: string | undefined,
     on_update?: string | "NO ACTION",
     on_delete?: string | "NO ACTION"
 }
 
-export interface TableJoin {
+
+
+export interface DetatiledRelation {
     join_type: string,
     join_table_name: string,
     join_table_column_name: string,
@@ -49,4 +51,20 @@ export interface TableJoin {
     table_name: string,
     table_column_name: string,
     table_alias: string
+}
+
+export interface BasicRelation {
+    class: any,
+    join_type: string,
+}
+
+export interface FindOptions {
+    where?: string,
+    order_by?: string,
+    group_by?: string,
+    limit?: number,
+    relation?: {
+        detailed_relation?: DetatiledRelation[],
+        basic_relation?: BasicRelation[]
+    },
 }

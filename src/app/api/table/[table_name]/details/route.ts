@@ -27,7 +27,11 @@ export async function GET(
         console.log(mainQuerry);
         const result = await conn?.query({ sql : mainQuerry });*/
         const dataBase = new DatabaseTable();
-        const result = await dataBase.findAll()
+        const result = await dataBase.find({
+          relation:{
+            basic_relation: [{ class : DatabaseTableColumn , join_type: SqlConstants.LEFT_JOIN}]
+          }
+        });
         console.log(result);
         return new Response(JSON.stringify(result?.[0]));
     } catch (error) {

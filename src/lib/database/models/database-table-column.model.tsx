@@ -1,11 +1,11 @@
 import { SqlDataType, SqlConstants } from "../../../constants/sql";
+import { BaseModel } from "../base/base.model";
 import { Model, Column, Relation } from "../decorators";
 
 @Model({ name: "database_table_column", alias: "dbtc", references: ["type", "crud_option"] })
-export class DatabaseTableColumn {
+export class DatabaseTableColumn extends BaseModel {
 
     static TABLE = "database_table_column";
-    static ALIAS = "dbtc";
 
     @Column({
         title: "id",
