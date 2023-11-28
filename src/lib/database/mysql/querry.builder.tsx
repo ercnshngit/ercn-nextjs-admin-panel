@@ -4,7 +4,6 @@ import { db, sortTables } from "../connection";
 import { getColumnMetadata, getRelationMetadata, getTableMetadata } from "../decorators";
 import { Table, TableColumn, TableModel, TableRelation } from "../table.model";
 import { config } from "dotenv";
-import { table } from "console";
 
 config();
 export default class QuerryBuilder {
@@ -35,7 +34,7 @@ export default class QuerryBuilder {
                     if (table.columns.hasOwnProperty(column_name)) {
                         const column = table.columns[column_name];
                         if (column.title && column.data_type) {
-                            const columnName = column.title != "order" ? column.title : "`" + column.title + "`";
+                            const columnName = "`" + column.title + "`";
                             let columnDefinition = `${columnName} ${column.data_type}`;
 
                             if (!column.nullable) {
@@ -134,7 +133,6 @@ export default class QuerryBuilder {
     static async checkTableExistence(tableInfo: Table) {
         const querry = SqlConstants.IS_TABLE_EXISTS_QUERRY(tableInfo.name);
         const conn = await db.connection()
-        console.log(querry);
         const result = await conn?.query({ sql: querry });
         const table = result?.[0] as RowDataPacket[];
         console.log(table[0].STATUS);

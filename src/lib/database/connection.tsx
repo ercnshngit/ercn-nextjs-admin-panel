@@ -9,14 +9,16 @@ import { ColumnRelation } from './models/column-relation.model';
 import { CrudOption } from './models/crud-option.model';
 import { DatabaseTableColumn } from './models/database-table-column.model';
 import { DatabaseTable } from './models/database-table.model';
-import { Deneme } from './models/deneme.model';
 import { DataType } from './models/type.model';
+import { Prop } from './models/block_models/prop.model';
+import { BlockComponentProp } from './models/block_models/block-component-prop.model';
+import { ComponentProp } from './models/block_models/component_prop.model';
 
 export const db = {
     connection: connect,
     initialized: false,
     active_connection: null as any | null,
-    tables: [DatabaseTable, DatabaseTableColumn, ColumnOption, DataType, ColumnRelation, CrudOption, Deneme, Block, Types, Component, BlockComponent],
+    tables: [DatabaseTable, DatabaseTableColumn, ColumnOption, DataType, ColumnRelation, CrudOption, Block, Types, Component, BlockComponent, Prop, BlockComponentProp, ComponentProp],
 };
 
 // initialize db and models, called on first api request from /helpers/api/api-handler.js
