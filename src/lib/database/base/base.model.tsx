@@ -1,4 +1,4 @@
-import { SqlConstants } from "@/constants/sql";
+import { SqlConstants } from "../../../constants/sql";
 import { db, getTableData } from "../connection";
 import { FindOptions, Table } from "../table.model";
 
