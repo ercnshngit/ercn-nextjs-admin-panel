@@ -1,6 +1,8 @@
+import { DatabaseTableColumn } from "./models/database-table-column.model";
+import { DatabaseTable } from "./models/database-table.model";
+
 export class TableModel {
     constructor(table_info: Table, columns?: TableColumn[] | undefined, relations?: TableRelation[] | undefined) {
-
         this.table_info = table_info;
         this.references = relations;
         this.columns = columns;
@@ -68,3 +70,5 @@ export interface FindOptions {
         basic_relation?: BasicRelation[]
     },
 }
+
+export interface TableConfig extends DatabaseTable { }
