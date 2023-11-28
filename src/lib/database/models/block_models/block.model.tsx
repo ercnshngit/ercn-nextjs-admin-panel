@@ -1,10 +1,15 @@
 import { SqlDataType } from "../../../../constants/sql";
+import { BaseModel } from "../../base/base.model";
 import { Column, Model, Relation } from "../../decorators";
 
 @Model({ name: "block", alias: "b", references: ["types"] })
-export class Block {
+export class Block extends BaseModel {
     static TABLE = "block";
     static ALIAS = "b";
+
+    constructor() {
+        super(Block);
+    }
 
     @Column({
         title: "id",
@@ -31,8 +36,6 @@ export class Block {
         default_value: null,
         is_primary_key: false
     })
-    type_id?: number;
-
     @Relation({
         table_name: "types",
         column: "type_id",
@@ -41,5 +44,5 @@ export class Block {
         on_update: "CASCADE",
         on_delete: "CASCADE",
     })
-    type?: any;
+    type_id?: number;
 }
