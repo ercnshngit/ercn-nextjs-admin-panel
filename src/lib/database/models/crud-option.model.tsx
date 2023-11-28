@@ -1,5 +1,5 @@
-import { SqlDataType, SqlConstants } from "../../../../constants/sql";
-import { Model, Column, Relation } from "../../decorators";
+import { SqlDataType, SqlConstants } from "../../../constants/sql";
+import { Column, Model, Relation } from "../decorators";
 
 @Model({ name: "crud_option", alias: "co", references: ["type"] })
 export class CrudOption {

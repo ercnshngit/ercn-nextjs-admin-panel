@@ -1,4 +1,4 @@
-import { SqlDataType } from "@/constants/sql";
+import { SqlDataType } from "../../../../constants/sql";
 import { Column, Model, Relation } from "../../decorators";
 
 @Model({ name: "block_component", alias: "bcomp",references: ["block", "component"] })

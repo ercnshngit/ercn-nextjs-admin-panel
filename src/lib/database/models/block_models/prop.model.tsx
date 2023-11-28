@@ -1,4 +1,4 @@
-import { SqlDataType } from "@/constants/sql";
+import { SqlDataType } from "../../../../constants/sql";
 import { Column, Model } from "../../decorators";
 
 @Model({ name: "prop", alias: "prop" })
