@@ -89,8 +89,8 @@ export class SqlConstants {
         return this.SELECT + this.SELECT_ALL + this.FROM + tableName;
     }
 
-    static SELECT_ALL_WITH_ALIAS_QUERY(tableName: string, alias: string) {
-        return this.SELECT + this.SELECT_ALL + this.FROM + tableName + this.AS + alias;
+    static SELECT_ALL_WITH_ALIAS_QUERY(tableName: string, alias: string, select?: string | undefined) {
+        return this.SELECT + (select == "" ? this.SELECT_ALL : select) + this.FROM + tableName + this.AS + alias;
     }
 
     static SELECT_ALL_WITH_WHERE_QUERRY(tableName: string, where: string) {
@@ -141,13 +141,7 @@ export class SqlConstants {
         const mainTableInfo = getTableMetadata(model);
         if (mainTableInfo === undefined) return joins; // Table bilgisi yoksa çık.
         if (relation === undefined) return joins; // Relation bilgisi yoksa çık.
-        if (relation?.detailed_relation !== undefined) {
-            const detailedJoins = Object.values(relation?.detailed_relation);
-            detailedJoins.forEach(join => {
-                joins += this.JOIN_QUERRY_CREATOR(join.join_type, join.join_table_name, join.join_table_alias, join.join_table_column_name, join.table_column_name, join.table_name, join.table_alias) + " ";
-            });
-        }
-        else if (relation?.basic_relation !== undefined) {
+        if (relation?.basic_relation !== undefined) {
             const basicJoins = Object.values(relation?.basic_relation);
             basicJoins.forEach(join => {
                 const tableInfo = getTableMetadata(join.class);
@@ -159,6 +153,12 @@ export class SqlConstants {
                     if (relation.table_name !== mainTableInfo?.name) return;
                     joins += this.JOIN_QUERRY_CREATOR(join.join_type, tableInfo?.name, tableInfo?.alias, relation.column, relation.referenced_column, mainTableInfo?.name, mainTableInfo?.alias) + " ";
                 });
+            });
+        }
+        if (relation?.detailed_relation !== undefined) {
+            const detailedJoins = Object.values(relation?.detailed_relation);
+            detailedJoins.forEach(join => {
+                joins += this.JOIN_QUERRY_CREATOR(join.join_type, join.join_table_name, join.join_table_alias, join.join_table_column_name, join.table_column_name, join.table_name, join.table_alias) + " ";
             });
         }
 

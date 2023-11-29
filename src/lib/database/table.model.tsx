@@ -60,6 +60,7 @@ export interface BasicRelation {
 }
 
 export interface FindOptions {
+    select?: string,
     where?: string,
     order_by?: string,
     group_by?: string,

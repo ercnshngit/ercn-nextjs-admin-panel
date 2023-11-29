@@ -23,6 +23,7 @@ export class BaseModel {
 
     async find(options?: FindOptions | undefined) {
         let where = "";
+        let select = "";
         let order_by = "";
         let group_by = "";
         let limit = "";
@@ -30,6 +31,9 @@ export class BaseModel {
         if (this.table_data === null) { return null; }
         if (options === undefined) {
             return await this.findAll();
+        }
+        if (options.select !== undefined) {
+            relation = `${options.select}`;
         }
         if (options.where !== undefined) {
             console.log("where girdi.")
@@ -48,7 +52,7 @@ export class BaseModel {
             relation += SqlConstants.JOIN_QUERRY_BUILDER(this.modelClass, options.relation);
         }
         const connection = await db.connection();
-        const query = SqlConstants.SELECT_ALL_WITH_ALIAS_QUERY(this.table_data?.name, this.table_data?.alias) + relation + where + order_by + group_by + limit;
+        const query = SqlConstants.SELECT_ALL_WITH_ALIAS_QUERY(this.table_data?.name, this.table_data?.alias, select) + relation + where + order_by + group_by + limit;
         console.log("query ::", query)
         const [rows, fields] = await connection.execute(query);
         return rows;

@@ -6,6 +6,7 @@ import { Model, Column, Relation } from "../decorators";
 export class DatabaseTableColumn extends BaseModel {
 
     static TABLE = "database_table_column";
+    static ALIAS = "dbtc";
 
     @Column({
         title: "id",
