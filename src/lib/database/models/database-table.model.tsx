@@ -3,7 +3,7 @@ import { BaseModel } from "../base/base.model";
 import { Model, Column } from "../decorators";
 import { DatabaseTableColumn } from "./database-table-column.model";
 
-@Model({ name: "database_table", alias: "t" })
+@Model({ name: "database_table", alias: "dbt" })
 export class DatabaseTable extends BaseModel {
     static TABLE = "database_table";
     static ALIAS = "dbt";

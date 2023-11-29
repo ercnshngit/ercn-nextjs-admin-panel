@@ -53,7 +53,7 @@ export class BaseModel {
         }
         const connection = await db.connection();
         const query = SqlConstants.SELECT_ALL_WITH_ALIAS_QUERY(this.table_data?.name, this.table_data?.alias, select) + relation + where + order_by + group_by + limit;
-        console.log("query ::", query)
+        //console.log("query ::", query)
         const [rows, fields] = await connection.execute(query);
         return rows;
     }

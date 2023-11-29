@@ -146,6 +146,14 @@ export default class QuerryBuilder {
         return table[0].STATUS;
     }
 
+    static async checkDataExistence(tableName: string, where: string): Promise<boolean> {
+        const querry = SqlConstants.SELECT_COUNT_QUERRY_WITH_WHERE(tableName, where);
+        const conn = await db.connection()
+        const result = await conn?.query({ sql: querry });
+        const data = result?.[0] as RowDataPacket[];
+        return data[0].STATUS == 0 ? false : true;
+    }
+
     static async checkColumns(tableInfo: Table) {
         const querry = SqlConstants.SHOW_TABLE_COLUMNS_QUERRY(tableInfo.name);
         const conn = await db.connection()

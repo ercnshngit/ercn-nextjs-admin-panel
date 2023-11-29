@@ -105,6 +105,10 @@ export class SqlConstants {
         return this.UPDATE + tableName + this.SET + set + this.WHERE + "id = " + id;
     }
 
+    static UPDATE_QUERRY_WITH_JOIN(tableName?: string, join?: string, set?: string, where?: string) {
+        return this.UPDATE + (join ? join : (tableName ? tableName : "")) + this.SET + set + this.WHERE + where;
+    }
+
     static DELETE_WITH_ID_QUERRY(tableName: string, id: number) {
         return this.DELETE_FROM + tableName + this.WHERE + "id = " + id;
     }
@@ -112,6 +116,11 @@ export class SqlConstants {
     static ALTER_TABLE_QUERRY(tableName: string) {
         return "ALTER TABLE " + tableName + " ";
     }
+
+    static SELECT_COUNT_QUERRY_WITH_WHERE(tableName: string, where: string) {
+        return this.SELECT + this.SELECT_COUNT + this.AS + "STATUS" + this.FROM + tableName + this.WHERE + where;
+    }
+
 
     static INSERT_QUERRY(tableName: string, body: any) {
         let columns = " (";
