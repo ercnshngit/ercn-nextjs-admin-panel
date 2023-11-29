@@ -1,10 +1,15 @@
 import { SqlDataType } from "../../../../constants/sql";
+import { BaseModel } from "../../base/base.model";
 import { Column, Model, Relation } from "../../decorators";
 
 @Model({ name: "component_prop", alias: "bcomp_prop", references: ["prop", "component"] })
-export class ComponentProp {
+export class ComponentProp extends BaseModel {
     static TABLE = "component_prop";
     static ALIAS = "comp_prop";
+
+    constructor() {
+        super(ComponentProp);
+    }
 
     @Column({
         title: "id",
@@ -22,6 +27,14 @@ export class ComponentProp {
         default_value: null,
         is_primary_key: false
     })
+    @Relation({
+        table_name: "component",
+        column: "component_id",
+        referenced_column: "id",
+        foreign_key_name: "fk_component_prop_component_id",
+        on_update: "CASCADE",
+        on_delete: "CASCADE",
+    })
     component_id?: number;
 
     @Column({
@@ -31,8 +44,6 @@ export class ComponentProp {
         default_value: null,
         is_primary_key: false
     })
-    prop_id?: number;
-
     @Relation({
         table_name: "prop",
         column: "prop_id",
@@ -41,16 +52,6 @@ export class ComponentProp {
         on_update: "CASCADE",
         on_delete: "CASCADE",
     })
-    prop?: any;
-
-    @Relation({
-        table_name: "component",
-        column: "component_id",
-        referenced_column: "id",
-        foreign_key_name: "fk_component_prop_component_id",
-        on_update: "CASCADE",
-        on_delete: "CASCADE",
-    })
-    component?: any;
+    prop_id?: number;
 
 }

@@ -1,10 +1,15 @@
 import { SqlDataType } from "../../../../constants/sql";
+import { BaseModel } from "../../base/base.model";
 import { Column, Model } from "../../decorators";
 
 @Model({ name: "types", alias: "t" })
-export class Types {
+export class Types extends BaseModel {
     static TABLE = "types";
     static ALIAS = "t";
+
+    constructor() {
+        super(Types);
+    }
 
     @Column({
         title: "id",

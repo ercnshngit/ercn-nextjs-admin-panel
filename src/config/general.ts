@@ -18,49 +18,384 @@ const tableNames = [
   "menu_type",
   "language",
   "config",
+  "block",
 ] as const;
 
 export const DATABASE_TABLES: DATABASE_TABLE<(typeof tableNames)[number]>[] = [
+  //{
+  //  name: "page_config",
+  //  hidden: true,
+  //  columns: [
+  //    {
+  //      name: "id",
+  //      type: "number",
+  //      hidden: true,
+  //      read: { hidden: false },
+  //    },
+  //    {
+  //      name: "title",
+  //      type: "string",
+  //    },
+  //    {
+  //      name: "css",
+  //      type: "string",
+  //      inputType: "textarea",
+  //    },
+  //  ],
+  //},
+  //{
+  //  name: "component_type",
+  //  hidden: true,
+  //  columns: [
+  //    {
+  //      name: "id",
+  //      type: "number",
+  //      hidden: true,
+  //      read: { hidden: false },
+  //    },
+  //    {
+  //      name: "name",
+  //      type: "string",
+  //    },
+  //  ],
+  //},
+  //{
+  //  name: "component",
+  //  hidden: true,
+  //  columns: [
+  //    {
+  //      name: "id",
+  //      type: "number",
+  //      hidden: true,
+  //      read: { hidden: false },
+  //    },
+  //    {
+  //      name: "title",
+  //      type: "string",
+  //    },
+  //    {
+  //      name: "type_id",
+  //      type: "number",
+  //      inputType: "relation",
+  //      read: {
+  //        inputType: "select",
+  //      },
+  //      create: { inputType: "select" },
+  //      update: { inputType: "select" },
+  //      relation: {
+  //        table: "component_type",
+  //        keyColumn: "id",
+  //        displayColumn: "name",
+  //        type: "one",
+  //      },
+  //    },
+  //  ],
+  //},
+  //{
+  //  name: "page_component",
+  //  hidden: true,
+  //  columns: [
+  //    {
+  //      name: "id",
+  //      type: "number",
+  //      hidden: true,
+  //    },
+  //
+  //    {
+  //      name: "page_id",
+  //      type: "number",
+  //      hidden: true,
+  //      relation: {
+  //        table: "page",
+  //        keyColumn: "id",
+  //        displayColumn: "title",
+  //        type: "one",
+  //      },
+  //    },
+  //    {
+  //      name: "component_id",
+  //      type: "number",
+  //      hidden: true,
+  //      relation: {
+  //        table: "component",
+  //        keyColumn: "id",
+  //        displayColumn: "title",
+  //        type: "one",
+  //      },
+  //    },
+  //    {
+  //      name: "value",
+  //      type: "string",
+  //    },
+  //    {
+  //      name: "index",
+  //      type: "number",
+  //    },
+  //  ],
+  //},
+  //{
+  //  name: "menu_type",
+  //  Icon: BsFillMenuButtonFill,
+  //  columns: [
+  //    {
+  //      name: "id",
+  //      type: "number",
+  //      update: { hidden: true },
+  //      create: { hidden: true },
+  //    },
+  //    {
+  //      name: "name",
+  //      type: "string",
+  //    },
+  //    {
+  //      name: "slug",
+  //      type: "string",
+  //    },
+  //    {
+  //      name: "language_code",
+  //      type: "string",
+  //      inputType: "relation",
+  //      update: { inputType: "select" },
+  //      create: { inputType: "select" },
+  //      relation: {
+  //        table: "language",
+  //        keyColumn: "code",
+  //        displayColumn: "name",
+  //        type: "one",
+  //      },
+  //    },
+  //  ],
+  //},
+  //{
+  //  name: "language",
+  //  columns: [
+  //    {
+  //      name: "name",
+  //      type: "string",
+  //    },
+  //    {
+  //      name: "code",
+  //      type: "string",
+  //    },
+  //  ],
+  //},
+  //{
+  //  name: "page",
+  //  functions: {
+  //    delete: deletePage,
+  //    readSingle: getPage,
+  //    update: updatePage,
+  //  },
+  //  Icon: HiOutlineDocumentDuplicate,
+  //  columns: [
+  //    {
+  //      name: "id",
+  //      type: "number",
+  //      update: { hidden: true },
+  //      create: { hidden: true },
+  //    },
+  //    {
+  //      name: "title",
+  //      type: "string",
+  //      searchable: true,
+  //    },
+  //    {
+  //      name: "description",
+  //      type: "string",
+  //      inputType: "textarea",
+  //    },
+  //    {
+  //      name: "image",
+  //      type: "string",
+  //      inputType: "image",
+  //    },
+  //
+  //    {
+  //      name: "slug",
+  //      type: "string",
+  //    },
+  //    {
+  //      name: "language_code",
+  //      type: "string",
+  //      inputType: "relation",
+  //      update: { inputType: "select" },
+  //      create: { inputType: "select" },
+  //      relation: {
+  //        table: "language",
+  //        keyColumn: "code",
+  //        displayColumn: "name",
+  //        type: "one",
+  //      },
+  //      filterable: true,
+  //    },
+  //    {
+  //      name: "content",
+  //      type: "string",
+  //      inputType: "relation",
+  //      read: {
+  //        inputType: "multi-select",
+  //      },
+  //      relation: {
+  //        table: "component",
+  //        keyColumn: "id",
+  //        displayColumn: "title",
+  //        type: "many",
+  //        pivotTable: "page_component",
+  //        pivotTableKeyColumn: "page_id",
+  //        pivotTableForeignKeyColumn: "component_id",
+  //        pivotTableExtraColumns: [
+  //          {
+  //            name: "value",
+  //            type: "string",
+  //          },
+  //          {
+  //            name: "index",
+  //            type: "number",
+  //          },
+  //        ],
+  //      },
+  //    },
+  //    {
+  //      name: "config_id",
+  //      type: "number",
+  //      inputType: "relation",
+  //      read: {
+  //        inputType: "select",
+  //      },
+  //      create: { inputType: "select" },
+  //      update: { inputType: "select" },
+  //      relation: {
+  //        table: "page_config",
+  //        keyColumn: "id",
+  //        displayColumn: "title",
+  //        type: "one",
+  //      },
+  //    },
+  //  ],
+  //},
+  //
+  //{
+  //  name: "generals",
+  //  Icon: MdSettingsInputComponent,
+  //  columns: [
+  //    {
+  //      name: "id",
+  //      type: "number",
+  //      create: { hidden: true },
+  //    },
+  //    {
+  //      name: "title",
+  //      type: "string",
+  //    },
+  //    {
+  //      name: "description",
+  //      type: "string",
+  //    },
+  //    {
+  //      name: "slug",
+  //      type: "string",
+  //      filterable: true,
+  //    },
+  //    {
+  //      name: "img",
+  //      type: "string",
+  //      inputType: "text",
+  //    },
+  //    {
+  //      name: "created_at",
+  //      type: "string",
+  //      hidden: true,
+  //    },
+  //    {
+  //      name: "updated_at",
+  //      type: "string",
+  //      hidden: true,
+  //    },
+  //  ],
+  //},
+  //{
+  //  name: "menu",
+  //  functions: {
+  //    create: createMenu as any,
+  //  },
+  //  hidden: true,
+  //  columns: [
+  //    {
+  //      name: "id",
+  //      type: "number",
+  //      hidden: true,
+  //      read: { hidden: false },
+  //    },
+  //    {
+  //      name: "title",
+  //      type: "string",
+  //    },
+  //    {
+  //      name: "type_id",
+  //      type: "number",
+  //      relation: {
+  //        table: "menu_type",
+  //        keyColumn: "id",
+  //        displayColumn: "name",
+  //        type: "one",
+  //      },
+  //      inputType: "relation",
+  //      create: {
+  //        inputType: "select",
+  //      },
+  //      update: {
+  //        inputType: "select",
+  //      },
+  //    },
+  //    {
+  //      name: "slug",
+  //      type: "string",
+  //      inputType: "text",
+  //    },
+  //    {
+  //      name: "created_at",
+  //      type: "string",
+  //      update: { hidden: true },
+  //      create: { hidden: true },
+  //    },
+  //    {
+  //      name: "updated_at",
+  //      type: "string",
+  //      create: { hidden: true },
+  //      update: { hidden: true },
+  //    },
+  //    {
+  //      name: "menu_belong_id",
+  //      type: "number",
+  //      hidden: true,
+  //      inputType: "select",
+  //      required: false,
+  //      default: "null",
+  //      options: [],
+  //    },
+  //    {
+  //      name: "route",
+  //      type: "string",
+  //    },
+  //    {
+  //      name: "status",
+  //      type: "number",
+  //      inputType: "select",
+  //      options: [
+  //        {
+  //          label: "Pasif",
+  //          value: "0",
+  //        },
+  //        {
+  //          label: "Aktif",
+  //          value: "1",
+  //        },
+  //      ],
+  //    },
+  //  ],
+  //},
   {
-    name: "page_config",
-    hidden: true,
-    columns: [
-      {
-        name: "id",
-        type: "number",
-        hidden: true,
-        read: { hidden: false },
-      },
-      {
-        name: "title",
-        type: "string",
-      },
-      {
-        name: "css",
-        type: "string",
-        inputType: "textarea",
-      },
-    ],
-  },
-  {
-    name: "component_type",
-    hidden: true,
-    columns: [
-      {
-        name: "id",
-        type: "number",
-        hidden: true,
-        read: { hidden: false },
-      },
-      {
-        name: "name",
-        type: "string",
-      },
-    ],
-  },
-  {
-    name: "component",
-    hidden: true,
+    name: "block",
     columns: [
       {
         name: "id",
@@ -75,321 +410,6 @@ export const DATABASE_TABLES: DATABASE_TABLE<(typeof tableNames)[number]>[] = [
       {
         name: "type_id",
         type: "number",
-        inputType: "relation",
-        read: {
-          inputType: "select",
-        },
-        create: { inputType: "select" },
-        update: { inputType: "select" },
-        relation: {
-          table: "component_type",
-          keyColumn: "id",
-          displayColumn: "name",
-          type: "one",
-        },
-      },
-    ],
-  },
-  {
-    name: "page_component",
-    hidden: true,
-    columns: [
-      {
-        name: "id",
-        type: "number",
-        hidden: true,
-      },
-
-      {
-        name: "page_id",
-        type: "number",
-        hidden: true,
-        relation: {
-          table: "page",
-          keyColumn: "id",
-          displayColumn: "title",
-          type: "one",
-        },
-      },
-      {
-        name: "component_id",
-        type: "number",
-        hidden: true,
-        relation: {
-          table: "component",
-          keyColumn: "id",
-          displayColumn: "title",
-          type: "one",
-        },
-      },
-      {
-        name: "value",
-        type: "string",
-      },
-      {
-        name: "index",
-        type: "number",
-      },
-    ],
-  },
-  {
-    name: "menu_type",
-    Icon: BsFillMenuButtonFill,
-    columns: [
-      {
-        name: "id",
-        type: "number",
-        update: { hidden: true },
-        create: { hidden: true },
-      },
-      {
-        name: "name",
-        type: "string",
-      },
-      {
-        name: "slug",
-        type: "string",
-      },
-      {
-        name: "language_code",
-        type: "string",
-        inputType: "relation",
-        update: { inputType: "select" },
-        create: { inputType: "select" },
-        relation: {
-          table: "language",
-          keyColumn: "code",
-          displayColumn: "name",
-          type: "one",
-        },
-      },
-    ],
-  },
-  {
-    name: "language",
-    columns: [
-      {
-        name: "name",
-        type: "string",
-      },
-      {
-        name: "code",
-        type: "string",
-      },
-    ],
-  },
-  {
-    name: "page",
-    functions: {
-      delete: deletePage,
-      readSingle: getPage,
-      update: updatePage,
-    },
-    Icon: HiOutlineDocumentDuplicate,
-    columns: [
-      {
-        name: "id",
-        type: "number",
-        update: { hidden: true },
-        create: { hidden: true },
-      },
-      {
-        name: "title",
-        type: "string",
-        searchable: true,
-      },
-      {
-        name: "description",
-        type: "string",
-        inputType: "textarea",
-      },
-      {
-        name: "image",
-        type: "string",
-        inputType: "image",
-      },
-
-      {
-        name: "slug",
-        type: "string",
-      },
-      {
-        name: "language_code",
-        type: "string",
-        inputType: "relation",
-        update: { inputType: "select" },
-        create: { inputType: "select" },
-        relation: {
-          table: "language",
-          keyColumn: "code",
-          displayColumn: "name",
-          type: "one",
-        },
-        filterable: true,
-      },
-      {
-        name: "content",
-        type: "string",
-        inputType: "relation",
-        read: {
-          inputType: "multi-select",
-        },
-        relation: {
-          table: "component",
-          keyColumn: "id",
-          displayColumn: "title",
-          type: "many",
-          pivotTable: "page_component",
-          pivotTableKeyColumn: "page_id",
-          pivotTableForeignKeyColumn: "component_id",
-          pivotTableExtraColumns: [
-            {
-              name: "value",
-              type: "string",
-            },
-            {
-              name: "index",
-              type: "number",
-            },
-          ],
-        },
-      },
-      {
-        name: "config_id",
-        type: "number",
-        inputType: "relation",
-        read: {
-          inputType: "select",
-        },
-        create: { inputType: "select" },
-        update: { inputType: "select" },
-        relation: {
-          table: "page_config",
-          keyColumn: "id",
-          displayColumn: "title",
-          type: "one",
-        },
-      },
-    ],
-  },
-
-  {
-    name: "generals",
-    Icon: MdSettingsInputComponent,
-    columns: [
-      {
-        name: "id",
-        type: "number",
-        create: { hidden: true },
-      },
-      {
-        name: "title",
-        type: "string",
-      },
-      {
-        name: "description",
-        type: "string",
-      },
-      {
-        name: "slug",
-        type: "string",
-        filterable: true,
-      },
-      {
-        name: "img",
-        type: "string",
-        inputType: "text",
-      },
-      {
-        name: "created_at",
-        type: "string",
-        hidden: true,
-      },
-      {
-        name: "updated_at",
-        type: "string",
-        hidden: true,
-      },
-    ],
-  },
-  {
-    name: "menu",
-    functions: {
-      create: createMenu as any,
-    },
-    hidden: true,
-    columns: [
-      {
-        name: "id",
-        type: "number",
-        hidden: true,
-        read: { hidden: false },
-      },
-      {
-        name: "title",
-        type: "string",
-      },
-      {
-        name: "type_id",
-        type: "number",
-        relation: {
-          table: "menu_type",
-          keyColumn: "id",
-          displayColumn: "name",
-          type: "one",
-        },
-        inputType: "relation",
-        create: {
-          inputType: "select",
-        },
-        update: {
-          inputType: "select",
-        },
-      },
-      {
-        name: "slug",
-        type: "string",
-        inputType: "text",
-      },
-      {
-        name: "created_at",
-        type: "string",
-        update: { hidden: true },
-        create: { hidden: true },
-      },
-      {
-        name: "updated_at",
-        type: "string",
-        create: { hidden: true },
-        update: { hidden: true },
-      },
-      {
-        name: "menu_belong_id",
-        type: "number",
-        hidden: true,
-        inputType: "select",
-        required: false,
-        default: "null",
-        options: [],
-      },
-      {
-        name: "route",
-        type: "string",
-      },
-      {
-        name: "status",
-        type: "number",
-        inputType: "select",
-        options: [
-          {
-            label: "Pasif",
-            value: "0",
-          },
-          {
-            label: "Aktif",
-            value: "1",
-          },
-        ],
       },
     ],
   },

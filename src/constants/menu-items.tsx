@@ -17,4 +17,9 @@ export const MENU = [
     icon: BsSliders,
     href: "/admin/generals",
   },
+  {
+    label: "Blocklar",
+    icon: BsSliders,
+    href: "/admin/block",
+  }
 ];

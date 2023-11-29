@@ -5,11 +5,11 @@ type Translations = {
     tr: string;
     en: string;
     [key: string]:
-      | {
-          tr: string;
-          en: string;
-        }
-      | string;
+    | {
+      tr: string;
+      en: string;
+    }
+    | string;
   };
 };
 
@@ -57,6 +57,23 @@ export const translations: Translations = {
     img: {
       tr: "Resim",
       en: "Image",
+    },
+  },
+
+  block: {
+    tr: "Bloklar",
+    en: "Blocks",
+    id: {
+      tr: "No",
+      en: "Id",
+    },
+    title: {
+      tr: "Başlık",
+      en: "Title",
+    },
+    type_id: {
+      tr: "Tip",
+      en: "Type",
     },
   },
 
@@ -189,7 +206,7 @@ export const translate = (key: string) => {
 
     const translatedText =
       translations[keyCat as keyof typeof translations]?.[
-        keyString as keyof (typeof translations)[typeof keyCat]
+      keyString as keyof (typeof translations)[typeof keyCat]
       ];
     return translatedText?.[DEFAULT_LANG as "tr" | "en"] || key;
   } else {

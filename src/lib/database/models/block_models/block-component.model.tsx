@@ -1,10 +1,15 @@
 import { SqlDataType } from "../../../../constants/sql";
+import { BaseModel } from "../../base/base.model";
 import { Column, Model, Relation } from "../../decorators";
 
-@Model({ name: "block_component", alias: "bcomp",references: ["block", "component"] })
-export class BlockComponent {
+@Model({ name: "block_component", alias: "bcomp", references: ["block", "component"] })
+export class BlockComponent extends BaseModel {
     static TABLE = "block_component";
     static ALIAS = "bcomp";
+
+    constructor() {
+        super(BlockComponent);
+    }
 
     @Column({
         title: "id",
@@ -22,6 +27,14 @@ export class BlockComponent {
         default_value: null,
         is_primary_key: false
     })
+    @Relation({
+        table_name: "block",
+        column: "block_id",
+        referenced_column: "id",
+        foreign_key_name: "fk_bcomp_block_id",
+        on_update: "CASCADE",
+        on_delete: "CASCADE",
+    })
     block_id?: number;
 
     @Column({
@@ -31,6 +44,14 @@ export class BlockComponent {
         default_value: null,
         is_primary_key: false
     })
+    @Relation({
+        table_name: "component",
+        column: "component_id",
+        referenced_column: "id",
+        foreign_key_name: "fk_bcomp_component_id",
+        on_update: "CASCADE",
+        on_delete: "CASCADE",
+    })
     component_id?: number;
 
     @Column({
@@ -39,6 +60,14 @@ export class BlockComponent {
         nullable: false,
         default_value: null,
         is_primary_key: false
+    })
+    @Relation({
+        table_name: "component",
+        column: "belong_component_id",
+        referenced_column: "id",
+        foreign_key_name: "fk_bcomp_belong_component_id",
+        on_update: "CASCADE",
+        on_delete: "CASCADE",
     })
     belong_component_id?: number;
 
@@ -59,35 +88,5 @@ export class BlockComponent {
         is_primary_key: false
     })
     order?: number;
-
-    @Relation({
-        table_name: "block",
-        column: "block_id",
-        referenced_column: "id",
-        foreign_key_name: "fk_bcomp_block_id",
-        on_update: "CASCADE",
-        on_delete: "CASCADE",
-    })
-    block?: any;
-
-    @Relation({
-        table_name: "component",
-        column: "component_id",
-        referenced_column: "id",
-        foreign_key_name: "fk_bcomp_component_id",
-        on_update: "CASCADE",
-        on_delete: "CASCADE",
-    })
-    component?: any;
-
-    @Relation({
-        table_name: "component",
-        column: "belong_component_id",
-        referenced_column: "id",
-        foreign_key_name: "fk_bcomp_belong_component_id",
-        on_update: "CASCADE",
-        on_delete: "CASCADE",
-    })
-    belong_component?: any;
 
 }
