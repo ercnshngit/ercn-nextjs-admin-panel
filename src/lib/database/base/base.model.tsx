@@ -33,7 +33,7 @@ export class BaseModel {
             return await this.findAll();
         }
         if (options.select !== undefined) {
-            relation = `${options.select}`;
+            select = `${options.select}`;
         }
         if (options.where !== undefined) {
             console.log("where girdi.")
