@@ -5,12 +5,12 @@ import { Component } from "../../../../../orm/models/block_models/component.mode
 import { Prop } from "../../../../../orm/models/block_models/prop.model";
 import { SqlConstants } from "../../../../../constants/sql";
 
-// TÜm verileri döner
+// //database'teki BlockComponent modelinin içindeki block_id'ye göre componentleri listeler
 export async function GET(
   request: Request,
   { params }: { params: { id: number } }
 ) {
-  const id = params.id; //database'teki BlockComponent modelinin içindeki block_id'ye göre listeleniyor
+  const id = params.id;
   try {
     const conn = await db.connection();
 
@@ -19,14 +19,30 @@ export async function GET(
     const block_component_data = await blockComponent.find({ where: BlockComponent.ALIAS + ".block_id = " + id });
     for (let i = 0; i < block_component_data.length; i++) {
       const blockComponentProp = new BlockComponentProp();
-      const block_component_prop = await blockComponentProp.find({ select: Prop.ALIAS + ".key, " + BlockComponentProp.ALIAS + ".value", where: BlockComponentProp.ALIAS + ".block_component_id = " + block_component_data[i].id, relation: { detailed_relation: [{ join_table_name: Prop.TABLE, join_table_alias: Prop.ALIAS, join_table_column_name: "id", table_alias: BlockComponentProp.ALIAS, table_column_name: "prop_id", table_name: BlockComponentProp.TABLE, join_type: SqlConstants.LEFT_JOIN }] } });
+      const block_component_prop = await blockComponentProp.find({
+        select: Prop.ALIAS + ".key, " + BlockComponentProp.ALIAS + ".value",
+        where: BlockComponentProp.ALIAS + ".block_component_id = " + block_component_data[i].id,
+        relation: {
+          detailed_relation:
+            [{
+              join_table_name: Prop.TABLE, join_table_alias: Prop.ALIAS, join_table_column_name: "id",
+              table_alias: BlockComponentProp.ALIAS, table_column_name: "prop_id", table_name: BlockComponentProp.TABLE,
+              join_type: SqlConstants.LEFT_JOIN
+            }]
+        }
+      });
       await props.push(block_component_prop);
 
       const component_data = new Component();
       const component = await component_data.find({ where: Component.ALIAS + ".id = " + block_component_data[i].component_id });
       await components.push(component);
 
-      const block_component = await blockComponent.find({ select: BlockComponent.ALIAS + ".depth, " + BlockComponent.ALIAS + ".order, " + BlockComponent.ALIAS + ".belong_component_id, " + BlockComponent.ALIAS + ".block_id", where: BlockComponent.ALIAS + ".id = " + block_component_data[i].id });
+      const block_component = await blockComponent.find({
+        select: BlockComponent.ALIAS + ".depth, " + BlockComponent.ALIAS + ".order, " +
+          BlockComponent.ALIAS + ".belong_component_id, " + BlockComponent.ALIAS + ".block_id",
+        where: BlockComponent.ALIAS + ".id = " + block_component_data[i].id
+      });
+
       const assign = Object.assign(component[0], block_component[0]);
       console.log('assign: ', assign)
       result.concat(assign);

@@ -142,6 +142,7 @@ export default class QuerryBuilder {
         const querry = SqlConstants.IS_TABLE_EXISTS_QUERRY(tableInfo.name);
         const conn = await db.connection()
         const result = await conn?.query({ sql: querry });
+        console.log("querry result: ", querry);
         const table = result?.[0] as RowDataPacket[];
         return table[0].STATUS;
     }
