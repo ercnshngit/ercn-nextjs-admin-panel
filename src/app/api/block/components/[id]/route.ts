@@ -1,12 +1,9 @@
 import { db } from "@/lib/database/connection";
-import { SqlConstants } from "../../../../../constants/sql";
-import { Block } from "../../../../../lib/database/models/block_models/block.model";
-import { Types } from "../../../../../lib/database/models/block_models/types.model";
-import { join } from "path";
 import { BlockComponentProp } from "@/lib/database/models/block_models/block-component-prop.model";
 import { BlockComponent } from "@/lib/database/models/block_models/block-component.model";
-import { Prop } from "@/lib/database/models/block_models/prop.model";
 import { Component } from "@/lib/database/models/block_models/component.model";
+import { Prop } from "@/lib/database/models/block_models/prop.model";
+import { SqlConstants } from "../../../../../constants/sql";
 
 // TÜm verileri döner
 export async function GET(
@@ -43,6 +40,22 @@ export async function GET(
     return new Response(JSON.stringify({ status: "error", message: error }));
   }
 }
+
+export async function POST(
+  request: Request,
+  { params }: { params: { id: number } }
+) {
+  const id = params.id;
+  try {
+    const conn = await db.connection();
+    const res = await request.json();
+    console.log('GELDİMMMMMM')
+    return new Response(JSON.stringify({ status: "success" }));
+  } catch (error) {
+    return new Response(JSON.stringify({ status: "error", message: error }));
+  }
+}
+
 
 /*
 const COMPONENTS = [
