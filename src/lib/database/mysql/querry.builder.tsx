@@ -1,8 +1,8 @@
 import { RowDataPacket } from "mysql2";
 import { SqlConstants, SqlDataType } from "../../../constants/sql";
-import { db, sortTables } from "../connection";
-import { getColumnMetadata, getRelationMetadata, getTableMetadata } from "../decorators";
-import { Table, TableColumn, TableModel, TableRelation } from "../table.model";
+import { db, sortTables } from "./connection";
+import { getColumnMetadata, getRelationMetadata, getTableMetadata } from "../decarators/decorators";
+import { Table, TableColumn, TableModel, TableRelation } from "../base/table.model";
 import { config } from "dotenv";
 
 config();

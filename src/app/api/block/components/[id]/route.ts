@@ -1,4 +1,4 @@
-import { db } from "@/lib/database/connection";
+import { db } from "@/lib/database/mysql/connection";
 import { BlockComponentProp } from "@/lib/database/models/block_models/block-component-prop.model";
 import { BlockComponent } from "@/lib/database/models/block_models/block-component.model";
 import { Component } from "@/lib/database/models/block_models/component.model";

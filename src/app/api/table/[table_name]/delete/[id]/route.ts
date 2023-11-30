@@ -1,5 +1,5 @@
 import { SqlConstants } from "@/constants/sql";
-import { db } from "@/lib/database/connection";
+import { db } from "@/lib/database/mysql/connection";
 
 export async function GET(
     request: Request,

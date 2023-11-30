@@ -1,5 +1,5 @@
 import { SqlConstants } from "@/constants/sql";
-import { db } from "@/lib/database/connection";
+import { db } from "@/lib/database/mysql/connection";
 
 // Yeni veri oluşturur.
 export async function POST(

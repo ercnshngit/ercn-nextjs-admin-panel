@@ -1,4 +1,4 @@
-import { DatabaseTable } from "./models/database-table.model";
+import { DatabaseTable } from "../models/database-table-models/database-table.model";
 
 export class TableModel {
     constructor(table_info: Table, columns?: TableColumn[] | undefined, relations?: TableRelation[] | undefined) {

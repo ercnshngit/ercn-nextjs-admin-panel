@@ -1,5 +1,5 @@
-import { SqlDataType } from "../../../constants/sql";
-import { Model, Column } from "../decorators";
+import { SqlDataType } from "../../../../constants/sql";
+import { Model, Column } from "../../decarators/decorators";
 
 @Model({ name: "data_type", alias: "dt" })
 export class DataType {

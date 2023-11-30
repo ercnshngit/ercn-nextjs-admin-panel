@@ -1,6 +1,6 @@
 import { SqlConstants } from "../../../constants/sql";
-import { db, getTableData } from "../connection";
-import { FindOptions, Table } from "../table.model";
+import { db, getTableData } from "../mysql/connection";
+import { FindOptions, Table } from "./table.model";
 
 export class BaseModel {
     constructor(modelClass: any) {

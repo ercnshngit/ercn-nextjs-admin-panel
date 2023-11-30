@@ -1,6 +1,6 @@
 import { SqlDataType } from "../../../../constants/sql";
 import { BaseModel } from "../../base/base.model";
-import { Column, Model } from "../../decorators";
+import { Column, Model } from "../../decarators/decorators";
 
 @Model({ name: "types", alias: "t" })
 export class Types extends BaseModel {

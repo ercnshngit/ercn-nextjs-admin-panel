@@ -1,4 +1,4 @@
-import { Table, TableColumn, TableRelation } from "./table.model";
+import { Table, TableColumn, TableRelation } from "../base/table.model";
 import "reflect-metadata";
 
 export const COLUMN_METADATA_KEY = "custom:column";

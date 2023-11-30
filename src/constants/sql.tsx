@@ -1,5 +1,5 @@
-import { getRelationMetadata, getTableMetadata } from "../lib/database/decorators";
-import { TableColumn, DetatiledRelation, TableRelation, BasicRelation } from "../lib/database/table.model";
+import { getRelationMetadata, getTableMetadata } from "../lib/database/decarators/decorators";
+import { TableColumn, DetatiledRelation, TableRelation, BasicRelation } from "../lib/database/base/table.model";
 import { config } from "dotenv";
 
 config();

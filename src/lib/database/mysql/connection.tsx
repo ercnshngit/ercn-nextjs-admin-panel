@@ -1,19 +1,19 @@
 import mysql from 'mysql2/promise';
-import { getTableMetadata } from './decorators';
-import { BlockComponent } from './models/block_models/block-component.model';
-import { Block } from './models/block_models/block.model';
-import { Component } from './models/block_models/component.model';
-import { Types } from './models/block_models/types.model';
-import { ColumnOption } from './models/column-option.model';
-import { ColumnRelation } from './models/column-relation.model';
-import { CrudOption } from './models/crud-option.model';
-import { DatabaseTableColumn } from './models/database-table-column.model';
-import { DatabaseTable } from './models/database-table.model';
-import { DataType } from './models/type.model';
-import { Prop } from './models/block_models/prop.model';
-import { BlockComponentProp } from './models/block_models/block-component-prop.model';
-import { ComponentProp } from './models/block_models/component_prop.model';
-import { SqlConstants } from '../../constants/sql';
+import { getTableMetadata } from '../decarators/decorators';
+import { BlockComponent } from '../models/block_models/block-component.model';
+import { Block } from '../models/block_models/block.model';
+import { Component } from '../models/block_models/component.model';
+import { Types } from '../models/block_models/types.model';
+import { ColumnOption } from '../models/database-table-models/column-option.model';
+import { ColumnRelation } from '../models/database-table-models/column-relation.model';
+import { CrudOption } from '../models/database-table-models/crud-option.model';
+import { DatabaseTableColumn } from '../models/database-table-models/database-table-column.model';
+import { DatabaseTable } from '../models/database-table-models/database-table.model';
+import { DataType } from '../models/database-table-models/data-type.model';
+import { Prop } from '../models/block_models/prop.model';
+import { BlockComponentProp } from '../models/block_models/block-component-prop.model';
+import { ComponentProp } from '../models/block_models/component_prop.model';
+import { SqlConstants } from '../../../constants/sql';
 
 export const db = {
     connection: connect,

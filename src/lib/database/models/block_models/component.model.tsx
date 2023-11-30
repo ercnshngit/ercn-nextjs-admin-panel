@@ -1,6 +1,6 @@
 import { SqlDataType } from "../../../../constants/sql";
 import { BaseModel } from "../../base/base.model";
-import { Column, Model, Relation } from "../../decorators";
+import { Column, Model, Relation } from "../../decarators/decorators";
 
 @Model({ name: "component", alias: "comp", references: ["types"] })
 export class Component extends BaseModel {
