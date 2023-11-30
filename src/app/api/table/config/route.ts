@@ -6,6 +6,7 @@ import { formatDataFromResponseBody, formatDataFromSQLResult } from "@/lib/datab
 import { DatabaseTable } from "@/lib/database/models/database-table.model";
 import { DataType } from "@/lib/database/models/type.model";
 import QuerryBuilder from "@/lib/database/mysql/querry.builder";
+import { Console } from "console";
 
 export async function GET(
   request: Request,
@@ -119,34 +120,33 @@ export async function GET(
       
 
       const result = await conn.query(updateTableQuery);
-      console.log("result ::" , updateTableQuery);
+      console.log("result ::" , data);
       // Sütunları güncelle
+      Object.values(data.columns);
       for (const column of data.columns) {
         const isAlreadyCreated = column.id != null ? await QuerryBuilder.checkDataExistence(DatabaseTableColumn.TABLE,`id = ${column.id}`) : false; // id bos gonderilirse yenı column
+        console.log("isAlreadyCreated ::" , isAlreadyCreated);
         if(isAlreadyCreated){
-          const updateColumnQuery = `
-        ${SqlConstants.UPDATE} ${DatabaseTableColumn.TABLE} AS ${DatabaseTableColumn.ALIAS}
-        ${SqlConstants.SET}
-          ${DatabaseTableColumn.ALIAS}.name = '${column.name}',
-          ${DatabaseTableColumn.ALIAS}.is_primary = ${column.is_primary},
-          ${DatabaseTableColumn.ALIAS}.is_required = ${column.is_required},
-          ${DatabaseTableColumn.ALIAS}.is_unique = ${column.is_unique},
-          ${DatabaseTableColumn.ALIAS}.is_hidden = ${column.is_hidden},
-          ${DatabaseTableColumn.ALIAS}.is_filterable = ${column.is_filterable},
-          ${DatabaseTableColumn.ALIAS}.is_searchable = ${column.is_searchable},
-          ${DatabaseTableColumn.ALIAS}.type_id = ${column.type != null ? column.type.id : null},
-          ${DatabaseTableColumn.ALIAS}.input_type_id = ${column.input_type != null ? column.input_type.id : null},
-          ${DatabaseTableColumn.ALIAS}.create_crud_option_id = ${column.create_crud_option_id != null ? column.create_crud_option_id.id : null},
-          ${DatabaseTableColumn.ALIAS}.update_crud_option_id = ${column.update_crud_option_id != null ? column.update_crud_option_id.id : null},
-          ${DatabaseTableColumn.ALIAS}.read_crud_option_id = ${column.read_crud_option_id != null ? column.read_crud_option_id.id : null}
-          ${SqlConstants.FROM}
-          ${DatabaseTable.TABLE} ${SqlConstants.AS} ${DatabaseTable.ALIAS}
-          ${SqlConstants.WHERE}
-          ${DatabaseTable.ALIAS}.id = ${tableId} ${SqlConstants.AND} ${DatabaseTableColumn.ALIAS}.id = ${column.id};
-        `;
+          const updateColumnQuery = 
+          SqlConstants.UPDATE + DatabaseTableColumn.TABLE + SqlConstants.AS + DatabaseTableColumn.ALIAS + SqlConstants.SET +
+          DatabaseTableColumn.ALIAS+".name ='"+ column.name + "',\n" +
+          DatabaseTableColumn.ALIAS+".is_primary =" + column.is_primary + ",\n" +
+          DatabaseTableColumn.ALIAS+".is_required =" + column.is_required + ",\n" +
+          DatabaseTableColumn.ALIAS+".is_unique =" + column.is_unique + ",\n" +
+          DatabaseTableColumn.ALIAS+".is_hidden =" + column.is_hidden + ",\n" +
+          DatabaseTableColumn.ALIAS+".is_filterable =" + column.is_filterable + ",\n" +
+          DatabaseTableColumn.ALIAS+".is_searchable =" + column.is_searchable + ",\n" +
+          DatabaseTableColumn.ALIAS+".type_id =" + (column.type != null ? column.type.id : null) + ",\n" +
+          DatabaseTableColumn.ALIAS+".input_type_id =" +(column.input_type != null ? column.input_type.id : null) + ",\n" +
+          DatabaseTableColumn.ALIAS+".create_crud_option_id =" + (column.create_crud_option_id != null ? column.create_crud_option_id.id : null) + ",\n" +
+          DatabaseTableColumn.ALIAS+".update_crud_option_id = " + (column.update_crud_option_id != null ? column.update_crud_option_id.id : null) + ",\n" +
+          DatabaseTableColumn.ALIAS+".read_crud_option_id =" + (column.read_crud_option_id != null ? column.read_crud_option_id.id : null) + "\n" +
+          SqlConstants.WHERE + "\n" +
+          DatabaseTableColumn.ALIAS+".id =" + column.id + ";";
 
-        const result = await conn.query(updateColumnQuery);
-        }else{
+          console.log("updateColumnQuery ::" , updateColumnQuery);
+          const result = await conn.query(updateColumnQuery);
+      }else{
           const createColumnQuery = `
           ${SqlConstants.INSERT_INTO} ${DatabaseTableColumn.TABLE} (
             name,
@@ -180,6 +180,7 @@ export async function GET(
           );
         `;
           const result = await conn.query(createColumnQuery);
+          console.log("createColumnQuery ::" , createColumnQuery);
         }
       }
   

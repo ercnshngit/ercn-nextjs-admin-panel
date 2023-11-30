@@ -15,13 +15,13 @@ export class BaseModel {
     async connect() {
         await db.connection();
     }
-    async findAll() {
+    async findAll(): Promise<any> {
         const connection = await db.connection();
-        const [rows, fields] = await connection.execute(`SELECT * FROM ${this.table_data}`);
+        const [rows, fields] = await connection.execute(`SELECT * FROM ${this.table_data?.name}`);
         return rows;
     }
 
-    async find(options?: FindOptions | undefined) {
+    async find(options?: FindOptions | undefined): Promise<any> {
         let where = "";
         let select = "";
         let order_by = "";
@@ -58,7 +58,7 @@ export class BaseModel {
         return rows;
     }
 
-    async findWithId(id: number) {
+    async findWithId(id: number): Promise<any> {
         if (id === undefined) { return null; }
         if (this.table_data === null) { return null; }
         const connection = await db.connection();
@@ -66,7 +66,7 @@ export class BaseModel {
         return rows;
     }
 
-    async insert(data: any) {
+    async insert(data: any): Promise<any> {
         if (data === undefined) { return null; }
         if (this.table_data === null) { return null; }
         const connection = await db.connection();
@@ -74,7 +74,7 @@ export class BaseModel {
         return rows;
     }
 
-    async update(data: any, id: number) {
+    async update(data: any, id: number): Promise<any> {
         if (id === undefined) { return null; }
         if (data === undefined) { return null; }
         if (this.table_data === null) { return null; }
@@ -83,7 +83,7 @@ export class BaseModel {
         return rows;
     }
 
-    async delete(id: number) {
+    async delete(id: number): Promise<any> {
         if (id === undefined) { return null; }
         if (this.table_data === null) { return null; }
         const connection = await db.connection();
