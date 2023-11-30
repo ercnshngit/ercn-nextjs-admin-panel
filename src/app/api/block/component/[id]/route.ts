@@ -1,8 +1,8 @@
-import { db } from "@/orm/mysql/connection";
-import { BlockComponentProp } from "@/orm/models/block_models/block-component-prop.model";
-import { BlockComponent } from "@/orm/models/block_models/block-component.model";
-import { Component } from "@/orm/models/block_models/component.model";
-import { Prop } from "@/orm/models/block_models/prop.model";
+import { db } from "../../../../../orm/mysql/connection";
+import { BlockComponentProp } from "../../../../../orm/models/block_models/block-component-prop.model";
+import { BlockComponent } from "../../../../../orm/models/block_models/block-component.model";
+import { Component } from "../../../../../orm/models/block_models/component.model";
+import { Prop } from "../../../../../orm/models/block_models/prop.model";
 import { SqlConstants } from "../../../../../constants/sql";
 
 // TÜm verileri döner
@@ -36,21 +36,6 @@ export async function GET(
     }
 
     return new Response(JSON.stringify(result));
-  } catch (error) {
-    return new Response(JSON.stringify({ status: "error", message: error }));
-  }
-}
-
-export async function POST(
-  request: Request,
-  { params }: { params: { id: number } }
-) {
-  const id = params.id;
-  try {
-    const conn = await db.connection();
-    const res = await request.json();
-    console.log('GELDİMMMMMM')
-    return new Response(JSON.stringify({ status: "success" }));
   } catch (error) {
     return new Response(JSON.stringify({ status: "error", message: error }));
   }
