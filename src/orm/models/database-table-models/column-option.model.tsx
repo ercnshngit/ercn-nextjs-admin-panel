@@ -1,4 +1,4 @@
-import { SqlDataType, SqlConstants } from "../../../../constants/sql";
+import { SqlDataType, SqlConstants } from "../../../constants/sql";
 import { Column, Model, Relation } from "../../decarators/decorators";
 
 @Model({

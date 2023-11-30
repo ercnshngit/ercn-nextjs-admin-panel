@@ -1,11 +1,11 @@
 import { SqlConstants } from "@/constants/sql";
-import { db } from "@/lib/database/mysql/connection";
-import { CrudOption } from "@/lib/database/models/database-table-models/crud-option.model";
-import { DatabaseTableColumn } from "@/lib/database/models/database-table-models/database-table-column.model";
-import { formatDataFromResponseBody, formatDataFromSQLResult } from "@/lib/database/models/dtos/database-table.dto";
-import { DatabaseTable } from "@/lib/database/models/database-table-models/database-table.model";
-import { DataType } from "@/lib/database/models/database-table-models/data-type.model";
-import QuerryBuilder from "@/lib/database/mysql/querry.builder";
+import { db } from "@/orm/mysql/connection";
+import { CrudOption } from "@/orm/models/database-table-models/crud-option.model";
+import { DatabaseTableColumn } from "@/orm/models/database-table-models/database-table-column.model";
+import { formatDataFromResponseBody, formatDataFromSQLResult } from "@/orm/models/dtos/database-table.dto";
+import { DatabaseTable } from "@/orm/models/database-table-models/database-table.model";
+import { DataType } from "@/orm/models/database-table-models/data-type.model";
+import QuerryBuilder from "@/orm/mysql/querry.builder";
 import { Console } from "console";
 
 export async function GET(

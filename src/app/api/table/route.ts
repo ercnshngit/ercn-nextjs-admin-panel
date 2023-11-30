@@ -1,5 +1,5 @@
 import { SqlConstants } from "@/constants/sql";
-import { db } from "@/lib/database/mysql/connection";
+import { db } from "@/orm/mysql/connection";
 
 // Bir veritabanındakı tablo isimlerini , kolon isimlerini ve kolon tiplerini döndürür.
 export async function GET(request: Request) {

@@ -1,4 +1,4 @@
-import { SqlDataType, SqlConstants } from "../../../../constants/sql";
+import { SqlDataType, SqlConstants } from "../../../constants/sql";
 import { BaseModel } from "../../base/base.model";
 import { Model, Column, Relation } from "../../decarators/decorators";
 

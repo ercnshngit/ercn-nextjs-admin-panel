@@ -13,7 +13,7 @@ import { DataType } from '../models/database-table-models/data-type.model';
 import { Prop } from '../models/block_models/prop.model';
 import { BlockComponentProp } from '../models/block_models/block-component-prop.model';
 import { ComponentProp } from '../models/block_models/component_prop.model';
-import { SqlConstants } from '../../../constants/sql';
+import { SqlConstants } from '../../constants/sql';
 
 export const db = {
     connection: connect,
