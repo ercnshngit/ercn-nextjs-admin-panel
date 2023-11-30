@@ -7,8 +7,8 @@ export class Prop extends BaseModel {
     static TABLE = "prop";
     static ALIAS = "prop";
 
-    constructor() {
-        super(Prop);
+    constructor(connection?: any | undefined) {
+        super(Prop, connection);
     }
 
     @Column({

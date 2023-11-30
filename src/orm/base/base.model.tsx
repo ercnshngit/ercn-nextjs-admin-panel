@@ -3,18 +3,16 @@ import { db, getTableData } from "../mysql/connection";
 import { FindOptions, Table } from "./table.model";
 
 export class BaseModel {
-    constructor(modelClass: any) {
+    constructor(modelClass: any, connection?: any | undefined) {
+        this.connection = connection;
         this.modelClass = modelClass;
-        this.connect();
         this.table_data = getTableData(this.modelClass)
     }
 
     modelClass: any;
     table_data: Table | null;
+    connection: any;
 
-    async connect() {
-        await db.connection();
-    }
     async findAll(): Promise<any> {
         const connection = await db.connection();
         const [rows, fields] = await connection.execute(`SELECT * FROM ${this.table_data?.name}`);

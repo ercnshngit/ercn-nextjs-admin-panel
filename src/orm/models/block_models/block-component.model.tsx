@@ -57,7 +57,7 @@ export class BlockComponent extends BaseModel {
     @Column({
         title: "belong_component_id",
         data_type: SqlDataType.INT,
-        nullable: false,
+        nullable: true,
         default_value: null,
         is_primary_key: false
     })

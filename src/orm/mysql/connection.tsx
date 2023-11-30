@@ -14,6 +14,9 @@ import { Prop } from '../models/block_models/prop.model';
 import { BlockComponentProp } from '../models/block_models/block-component-prop.model';
 import { ComponentProp } from '../models/block_models/component_prop.model';
 import { SqlConstants } from '../../constants/sql';
+import { config } from 'dotenv';
+
+config();
 
 export const db = {
     connection: connect,
@@ -25,27 +28,46 @@ export const db = {
 // initialize db and models, called on first api request from /helpers/api/api-handler.js
 
 async function connect() {
+    console.log("Connecting to database...");
+    if (db.active_connection != null) {              // Aktif bağlantı varsa onu döndür.
+        db.active_connection.close();
+        db.active_connection = createConnection();
+        return db.active_connection;
+    } else {
+        db.active_connection = createConnection();
+        return db.active_connection;
+    }
+
+}
+
+async function createConnection() {
     try {
-        if (db.active_connection) {              // Aktif bağlantı varsa onu döndür.
-            const result = await db.active_connection.query(SqlConstants.USE_DATABASE_QUERRY())
-            return db.active_connection;
+        let status: boolean = true;
+        while (status) {
+            const connection = await mysql.createConnection({
+                host: process.env.DB_HOST,
+                port: process.env.DB_PORT ? +process.env.DB_PORT : 3306,
+                user: process.env.DB_USER,
+                password: process.env.DB_PASSWORD,
+                database: process.env.DB_NAME
+            });
+            if (connection != null) {
+                db.initialized = true;
+                db.active_connection = connection;
+                console.log("Connected to database.");
+                const result = await db.active_connection.query(SqlConstants.USE_DATABASE_QUERRY())
+                status = false;
+            }
         }
-        const connection = await mysql.createConnection({
-            host: process.env.DB_HOST,
-            port: process.env.DB_PORT ? +process.env.DB_PORT : 3306,
-            user: process.env.DB_USER,
-            password: process.env.DB_PASSWORD,
-            database: process.env.DB_NAME
-        });
-        db.initialized = true;
-        db.active_connection = connection;
-        return connection;
+        return db.active_connection;
     } catch (error) {
         console.log("Connection error :" + error);
         db.initialized = false;
         return null;
     }
+
 }
+
 export function sortTables(tables: any[]) {  // Relationlara gore tableları sıralayan fonksiyon.
     let sortedTables: any[] = [];
 
