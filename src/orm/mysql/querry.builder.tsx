@@ -101,6 +101,9 @@ export default class QuerryBuilder {
     static async genMigration(tables: any[]) {
         let allQueries: any[] = [];
         tables.forEach(async element => {
+            let differenceOfColumnsQuerry = '';
+            let differenceOfRelationsQuerry = '';
+            let createTableQuerry = '';
             const tableInfo = getTableMetadata(element);
             const columns = getColumnMetadata(element);
             const relations = getRelationMetadata(element);
@@ -108,29 +111,28 @@ export default class QuerryBuilder {
                 return;
             }
             if ((await this.checkTableExistence(tableInfo)) == 0) {   // Table yoksa oluştur.
-                const createTableQuerry = this.createTableQuerry(tableInfo, columns, relations);
+                createTableQuerry = this.createTableQuerry(tableInfo, columns, relations);
                 if (createTableQuerry != '') {
                     allQueries.push(createTableQuerry);
                 }
                 allQueries.push(createTableQuerry);
-                //console.log({ table_name: tableInfo.name, create_table_querry: createTableQuerry });
-                return;
-            }
-            const differenceOfColumns = await this.compareColumns(tableInfo, columns);
-            const differenceOfColumnsQuerry = this.createColumnDifferenceQuerry(tableInfo, differenceOfColumns);
-            if (differenceOfColumnsQuerry != '') {
-                allQueries.push(differenceOfColumnsQuerry);
+            } else {
+                const differenceOfColumns = await this.compareColumns(tableInfo, columns);
+                differenceOfColumnsQuerry = this.createColumnDifferenceQuerry(tableInfo, differenceOfColumns);
+                if (differenceOfColumnsQuerry != '') {
+                    allQueries.push(differenceOfColumnsQuerry);
+                }
+
+                if (relations != undefined) {                             // Relation var ise gir ve kontrol et.
+                    const differenceOfRelations = await this.compareRelations(tableInfo, relations);
+                    differenceOfRelationsQuerry = this.createRelationDifferenceQuerry(tableInfo, differenceOfRelations);
+                    if (differenceOfRelationsQuerry != '') {
+                        allQueries.push(differenceOfRelationsQuerry);
+                    }
+                }
             }
 
-            if (relations != undefined) {                             // Relation var ise gir ve kontrol et.
-                const differenceOfRelations = await this.compareRelations(tableInfo, relations);
-                const differenceOfRelationsQuerry = this.createRelationDifferenceQuerry(tableInfo, differenceOfRelations);
-                if (differenceOfRelationsQuerry != '') {
-                    allQueries.push(differenceOfRelationsQuerry);
-                }
-                //console.log({ table_name: tableInfo.name, relations_difference: differenceOfRelations, relations_difference_querry: differenceOfRelationsQuerry });
-            }
-            //console.log({ table_name: tableInfo.name, columns_difference_querry: differenceOfColumnsQuerry });
+            console.log({ table_name: tableInfo.name, columns_difference_querry: differenceOfColumnsQuerry, relations_difference_querry: differenceOfRelationsQuerry, create_table_querry: createTableQuerry });
         });
         const querriesArray = Object.values(allQueries);
         querriesArray.forEach((element: any) => {
