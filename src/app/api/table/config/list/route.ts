@@ -1,4 +1,4 @@
-import { Prop } from "../../../../orm/models/block_models/prop.model";
+import { Prop } from "@/orm/models/block_models/prop.model";
 import { db } from "@/orm/mysql/connection";
 
 export async function POST(
@@ -6,8 +6,12 @@ export async function POST(
 ) {
     try {
         const conn = await db.connection();
-        const prop = new Prop();
+        const prop = new Prop(conn);
         const body = await request.json();
+        const isInside = body.status;
+        if (isInside) {
+        }
+        /*
         for (let i = 0; i < body.length; i++) {
             if (body[i].props.length < 1) {
                 continue;
